@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hades_Compression.MainPage"
+             Shell.NavBarIsVisible="false">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,20"
+            Spacing="25">
+
+            <Label 
+                Text="You've saved 3.1TB of space!"
+                FontSize="20" />
+            
+            <Button Text="Show Alert" Clicked="OnPickFileClicked" />
+
+            <Button
+                x:Name="PickImage"
+                Text="Manually compress file(s)" 
+                SemanticProperties.Hint="Allows user to manually compress file(s)"
+                Clicked="OnPickFileClicked"
+                HorizontalOptions="Fill"
+                FontSize="18" />
+
+            <Button
+                Text="Set directories to auto-compress" 
+                SemanticProperties.Hint="Allows users to manage what directories they want Hades-Compression to automatically compress"
+                Clicked="OnCounterClicked"
+                HorizontalOptions="Start"
+                FontSize="18" />
+
+            <Button
+                Text="Set output directory" 
+                SemanticProperties.Hint="Allows users to set an output directory for compressed files (this should be something like Onedrive/Google Drive/Dropbox/NAS)"
+                Clicked="OnCounterClicked"
+                HorizontalOptions="Start"
+                FontSize="18"
+            />
+
+            <HorizontalStackLayout>
+                <Switch IsToggled="false" Toggled="OnCounterClicked" />
+                <Label Text="Compress new items in queue" />
+            </HorizontalStackLayout>
+
+            <Label
+                Text="Queue (24)"
+                Style="{StaticResource Headline}"
+                FontSize = "18"
+                HorizontalOptions="Start" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
