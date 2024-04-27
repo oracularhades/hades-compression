@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <_PostProcessingItem Include="Hades_Compression.app/Contents/MacOS/Hades_Compression">
+      <BCSymbolMapName>Hades_Compression.bcsymbolmap</BCSymbolMapName>
+      <NoDSymUtil>true</NoDSymUtil>
+      <dSYMSourcePathExists>false</dSYMSourcePathExists>
+      <NoSymbolStrip>true</NoSymbolStrip>
+      <dSYMInfoPlistRelativePath>Hades_Compression.app.dSYM\Contents\Info.plist</dSYMInfoPlistRelativePath>
+      <SymbolFile>/Users/josh/Documents/GitHub/hades-compression/Hades_Compression/obj/Debug/net8.0-maccatalyst/maccatalyst-arm64/mtouch-symbols.list</SymbolFile>
+      <DSymName>Hades_Compression.app.dSYM</DSymName>
+      <SourceProjectPath>/Users/josh/Documents/GitHub/hades-compression/Hades_Compression</SourceProjectPath>
+    </_PostProcessingItem>
+  </ItemGroup>
+</Project>

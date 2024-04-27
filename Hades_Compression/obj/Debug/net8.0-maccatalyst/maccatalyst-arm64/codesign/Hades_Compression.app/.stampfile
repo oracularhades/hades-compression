@@ -1,0 +1,1 @@
+-v --force --timestamp=none --sign - --entitlements /Users/josh/Documents/GitHub/hades-compression/Hades_Compression/obj/Debug/net8.0-maccatalyst/maccatalyst-arm64/Entitlements.xcent /Users/josh/Documents/GitHub/hades-compression/Hades_Compression/bin/Debug/net8.0-maccatalyst/maccatalyst-arm64/Hades_Compression.app
