@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HadesCompression.QueueItemComponent">
+    <HorizontalStackLayout Spacing="8">
+        <ImageButton
+            x:Name="PickImage"
+            Source="play_solid.png"
+            CornerRadius="6"
+            IsVisible="{Binding paused}"
+            Clicked="OnQueuePlayClicked"
+            CommandParameter="{Binding .}"
+        />
+
+        <ImageButton
+            Source="pause_solid.png"
+            CornerRadius="6"
+            IsVisible="{Binding compressing}"
+            Clicked="OnQueuePauseClicked"
+            CommandParameter="{Binding .}"
+        />
+
+        <VerticalStackLayout HorizontalOptions="Start">
+            <HorizontalStackLayout Spacing="8">
+                <Label 
+                    Text="{Binding status}" />
+
+                    <HorizontalStackLayout IsVisible="{Binding compressing}" Spacing="4">
+                        <Label
+                            Text="{Binding encoded}"
+                            TextColor="Grey"
+                        />
+
+                        <Label
+                            Text="/"
+                            TextColor="Grey"
+                        />
+
+                        <Label
+                            Text="{Binding max_encoded}"
+                            TextColor="Grey"
+                        />
+                    </HorizontalStackLayout>
+            </HorizontalStackLayout>
+
+            <Label 
+                Text="{Binding path}" />
+        </VerticalStackLayout>
+    </HorizontalStackLayout>
+</ContentView>

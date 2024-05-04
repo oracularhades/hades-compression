@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HadesCompression.Advanced_Page"
+             Title="Advanced_Page"
+             Shell.NavBarIsVisible="false">
+             
+    <ScrollView>
+        <VerticalStackLayout Padding="30,20" Spacing="16">
+            <Label 
+                Text="Advanced"
+                FontSize="16"
+            />
+
+            <VerticalStackLayout Spacing="10">
+                <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                    <Label Text="Preset" VerticalOptions="Center" WidthRequest="400" />
+                    <Picker x:Name="preset_picker">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>ultrafast</x:String>
+                                <x:String>superfast</x:String>
+                                <x:String>veryfast</x:String>
+                                <x:String>faster</x:String>
+                                <x:String>fast</x:String>
+                                <x:String>medium (recommended)</x:String>
+                                <x:String>slow</x:String>
+                                <x:String>slower</x:String>
+                                <x:String>veryslow</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                    <Label Text="Max quality" VerticalOptions="Center" WidthRequest="400" />
+                    <Picker x:Name="quality_picker">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>2160 (4k)</x:String>
+                                <x:String>1440</x:String>
+                                <x:String>1080</x:String>
+                                <x:String>720</x:String>
+                                <x:String>480</x:String>
+                                <x:String>360</x:String>
+                                <x:String>240</x:String>
+                                <x:String>144</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                    <Label Text="Vcodec" VerticalOptions="Center" WidthRequest="400" />
+                    <HorizontalStackLayout Spacing="4">
+                        <Picker x:Name="vcodec_picker">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>libx264</x:String>
+                                    <x:String>libx265</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                    <Label Text="Max bitrate" VerticalOptions="Center" WidthRequest="400" />
+                    <Entry Placeholder="0" Keyboard="Numeric" />
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                    <Label Text="Crf" VerticalOptions="Center" WidthRequest="400" />
+                    <Entry Placeholder="0" Keyboard="Numeric" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
