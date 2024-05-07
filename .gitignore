@@ -6,3 +6,6 @@ ffmpeg/ffprobe.exe
 /.vs
 /obj
 /obj
+/obj/Debug
+/obj/Debug
+/obj

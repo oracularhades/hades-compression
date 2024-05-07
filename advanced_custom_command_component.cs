@@ -78,7 +78,7 @@ public partial class AdvancedCustomCommandComponent : ContentView, INotifyProper
                 ffmpeg_output_command = clothed_ffmpeg_command;
             }
 
-            Ffmpeg_variables = File.ReadAllText("./resources/TextFiles/ffmpeg_variable_description.txt");
+            Ffmpeg_variables = File.ReadAllText("ffmpeg_variable_description.txt");
 
 			this.Dispatcher.Dispatch(() => {
 				Ffmpeg_command = ffmpeg_output_command;

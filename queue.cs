@@ -122,7 +122,12 @@ namespace HadesCompression
                         Debug.WriteLine("queue_ffmpeg Starting... "+path);
                         
                         Objects.ffprobevideoinfo ffprobe = ffmpeg.ffprobe(path);
+
+                        Debug.WriteLine("queue_ffmpeg PAST 2 "+path);
+
                         Objects.encoding_config encoding_config_from_ffprobe = ffmpeg.get_encoding_config_from_ffprobe(ffprobe, output_directory);
+
+                        Debug.WriteLine("queue_ffmpeg PAST 3 "+path);
 
                         in_progress = in_progress+1;
                         int exit_code = await ffmpeg.encode(encoding_config_from_ffprobe, null);

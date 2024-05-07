@@ -12,6 +12,7 @@ namespace HadesCompression;
 public partial class MainPage : ContentPage, INotifyPropertyChanged
 {
     // encoding_paused
+    // Hadescompression_will_use_a_max_of
     public bool update_safety_lock = true;
     private string _youve_saved = "You've saved 0KB of space!";
     public string Youve_saved
@@ -22,6 +23,20 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
             if (_youve_saved != value)
             {
                 _youve_saved = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private string _Hadescompression_will_use_a_max_of = "";
+    public string Hadescompression_will_use_a_max_of
+    {
+        get => _Hadescompression_will_use_a_max_of;
+        set
+        {
+            if (_Hadescompression_will_use_a_max_of != value)
+            {
+                _Hadescompression_will_use_a_max_of = value;
                 OnPropertyChanged();
             }
         }
@@ -167,11 +182,18 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
         }
     }
 
+    private void hades_compression_will_use()
+    {
+        Hadescompression_will_use_a_max_of = $"Hades-compression will use a maximum of {CpuLimit * ThreadLimit}% CPU and {MemoryLimit * ThreadLimit}% at any given time.";
+    }
+
     private async void update_settings() {
         if (update_safety_lock == true)
         {
             return;
         }
+
+        hades_compression_will_use();
 
         Objects.settings settings = await Settings.get();
         settings.input_directory = Input_directory;
@@ -208,6 +230,7 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
             ThreadLimit = settings.thread_limit;
             EncodeWhileRecording = settings.encode_while_recording;
             EncodeWhileStreaming = settings.encode_while_streaming;
+            hades_compression_will_use();
 
             update_safety_lock = false;
         });

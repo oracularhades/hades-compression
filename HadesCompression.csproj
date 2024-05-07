@@ -25,7 +25,7 @@
 
 		<!-- App Identifier -->
 		<ApplicationId>com.oracularhades.hadescompression</ApplicationId>
-
+		
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>

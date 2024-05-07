@@ -84,7 +84,7 @@
 
             <VerticalStackLayout Spacing="4">
                 <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
-                    <Label Text="CPU Limit" VerticalOptions="Center" WidthRequest="400" />
+                    <Label Text="CPU Limit (per thread)" VerticalOptions="Center" WidthRequest="400" />
                     <HorizontalStackLayout Spacing="4">
                         <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding CpuLimit}" MaxLength="2" />
                         <Label Text="%" VerticalOptions="Center" />
@@ -92,7 +92,7 @@
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
-                    <Label Text="Memory Limit" VerticalOptions="Center" WidthRequest="400" />
+                    <Label Text="Memory Limit (per thread)" VerticalOptions="Center" WidthRequest="400" />
                     <HorizontalStackLayout Spacing="4">
                         <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding MemoryLimit}" MaxLength="2" />
                         <Label Text="%" VerticalOptions="Center" />
@@ -104,6 +104,10 @@
                     <HorizontalStackLayout Spacing="4">
                         <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding ThreadLimit}" MaxLength="2" />
                     </HorizontalStackLayout>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                    <Label Text="{Binding Hadescompression_will_use_a_max_of}" VerticalOptions="Start" TextColor="Grey" />
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
