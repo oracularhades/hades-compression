@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:custom_components="clr-namespace:HadesCompression"
+             x:Class="HadesCompression.ObsSettingsComponent"
+             Shell.NavBarIsVisible="false">
+             
+    <ScrollView>
+        <VerticalStackLayout Spacing="10">
+            <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="10">
+                <Entry Text="{Binding Obs_address}" Placeholder="Address" WidthRequest="200"/>
+                <Entry Text="{Binding Obs_password}" Placeholder="Password" WidthRequest="200" IsPassword="true"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

@@ -118,9 +118,35 @@ namespace HadesCompression
             public bool outputActive { get; set; }
             public bool outputReconnecting { get; set; }
         }
-         public class obs_recording {
+        public class obs_recording {
             public bool outputActive { get; set; }
             public bool outputPaused { get; set; }
+        }
+        public class settings {
+            public string input_directory { get; set; }
+            public string output_directory { get; set; }
+            public int cpu_limit { get; set; } = 60;
+            public int memory_limit { get; set; } = 60;
+            public int thread_limit { get; set; } = 3;
+            public bool automatically_compress_videos { get; set; } = true;
+            public bool encode_while_recording { get; set; }
+            public bool encode_while_streaming { get; set; }
+        }
+        public class advanced_settings {
+            public string obs_address { get; set; } = "127.0.0.1:4455";
+            public string obs_password { get; set; }
+            public string ffmpeg_command_type { get; set; } = "settings";
+            public string output_format { get; set; } = "Same as video";
+            public string preset { get; set; } = "medium";
+            public string max_quality { get; set; }
+            public string codec { get; set; } = "h264";
+            public int max_video_bitrate { get; set; }
+            public int max_audio_bitrate { get; set; }
+            public int crf { get; set; } = 18;
+            public string ffmpeg_custom_command { get; set; }
+        }
+        public class stats {
+            public double storage_saved_GB { get; set; }
         }
     }
 }

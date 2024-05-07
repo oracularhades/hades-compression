@@ -3,3 +3,6 @@
 ffmpeg/ffmpeg.exe
 ffmpeg/ffplay.exe
 ffmpeg/ffprobe.exe
+/.vs
+/obj
+/obj

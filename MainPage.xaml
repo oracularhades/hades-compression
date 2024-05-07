@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:custom_components="clr-namespace:HadesCompression"
              x:Class="HadesCompression.MainPage"
              Shell.NavBarIsVisible="false">
@@ -16,10 +17,10 @@
                 IsVisible="false" />
 
             <VerticalStackLayout>
-                <Label 
-                    Text="You've saved 3.1TB of space!"
+                <Label
+                    Text="{Binding Youve_saved}"
                     FontSize="20" />
-                <Label 
+                <Label
                     Text="Made by OracularHades. Compression via FFMPEG. Stay Cray."
                     TextColor="DarkGrey"
                     FontSize="12" />
@@ -45,6 +46,7 @@
                 Clicked="OnPickFileClicked"
                 HorizontalOptions="Start"
                 FontSize="14" 
+                IsVisible="False"
             />
 
             <Button
@@ -56,60 +58,35 @@
                 FontSize="14" 
             />
 
-            <VerticalStackLayout>
-                <Label 
-                    Text="Files from these directories are automatically compressed:"
-                    TextColor="DarkGrey"
-                    FontSize="12"
-                />
+            <VerticalStackLayout Spacing="8">
+                <VerticalStackLayout Spacing="4">
+                    <Label 
+                        Text="Files from these directories are automatically compressed:"
+                        TextColor="DarkGrey"
+                        FontSize="14"
+                    />
 
-                <CollectionView            
-                    ItemsSource="{Binding input_directories}">
-
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <VerticalStackLayout Margin="15">
-                                <Label 
-                                    Text="{Binding}"
-                                    TextColor="DarkGrey"
-                                    FontSize="12"
-                                />
-                            </VerticalStackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                    <Entry Text="{Binding Input_directory}" WidthRequest="400" HorizontalOptions="Start" />
+                </VerticalStackLayout>
             </VerticalStackLayout>
 
-            <VerticalStackLayout>
-                <Label 
-                    Text="Compressed files output to:"
-                    TextColor="DarkGrey"
-                    FontSize="12"
-                />
+            <VerticalStackLayout Spacing="8">
+                <VerticalStackLayout Spacing="4">
+                    <Label 
+                        Text="Compressed files output to:"
+                        TextColor="DarkGrey"
+                        FontSize="12"
+                    />
 
-                <CollectionView            
-                    ItemsSource="{Binding output_directories}">
-
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <VerticalStackLayout Margin="15">
-                                <Label 
-                                    Text="{Binding}"
-                                    TextColor="DarkGrey"
-                                    FontSize="12"
-                                />
-                            </VerticalStackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
+                    <Entry Text="{Binding Output_directory}" WidthRequest="400" HorizontalOptions="Start" />
+                </VerticalStackLayout>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="4">
                 <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                     <Label Text="CPU Limit" VerticalOptions="Center" WidthRequest="400" />
                     <HorizontalStackLayout Spacing="4">
-                        <Entry Placeholder="0" Keyboard="Numeric" />
+                        <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding CpuLimit}" MaxLength="2" />
                         <Label Text="%" VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </HorizontalStackLayout>
@@ -117,27 +94,34 @@
                 <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                     <Label Text="Memory Limit" VerticalOptions="Center" WidthRequest="400" />
                     <HorizontalStackLayout Spacing="4">
-                        <Entry Placeholder="0" Keyboard="Numeric" />
+                        <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding MemoryLimit}" MaxLength="2" />
                         <Label Text="%" VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                    <Label Text="Thread Limit" VerticalOptions="Center" WidthRequest="400" />
+                    <HorizontalStackLayout Spacing="4">
+                        <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding ThreadLimit}" MaxLength="2" />
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                     <Label Text="Automatically compress videos" VerticalOptions="Center" WidthRequest="400" />
-                    <Switch IsToggled="{Binding AutomaticallyCompressVideos}" Toggled="OnAutomaticallyCompressVideosToggled" VerticalOptions="Center" />
+                    <Switch IsToggled="{Binding AutomaticallyCompressVideos}" VerticalOptions="Center" />
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                     <Label Text="Encode while recording" VerticalOptions="Center" WidthRequest="400" />
-                    <Switch IsToggled="False" Toggled="OnAutomaticallyCompressVideosToggled" VerticalOptions="Center" />
+                    <Switch IsToggled="{Binding EncodeWhileRecording}" VerticalOptions="Center" />
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                     <Label Text="Encode while streaming" VerticalOptions="Center" WidthRequest="400" />
-                    <Switch IsToggled="False" Toggled="OnAutomaticallyCompressVideosToggled" VerticalOptions="Center" />
+                    <Switch IsToggled="{Binding EncodeWhileStreaming}" VerticalOptions="Center" />
                 </HorizontalStackLayout>
 
-                <Label 
+                <Label
                     Text="Queue is paused, new items will show as 'paused' and are not automatically compressed."
                     FontSize="14"
                     TextColor="Red"

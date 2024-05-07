@@ -35,14 +35,14 @@ namespace HadesCompression
                 }
             }
         }
-        private void get_queue()
+        private async void get_queue()
         {
             while (true)
             {
                 Thread.Sleep(1000);
-                List<Objects.queue_item> queue_items = queue.get();
+                List<Objects.queue_item> queue_items = await queue.get();
 
-                if (queue_bind != queue_items) {
+                if (!object.Equals(queue_bind, queue_items)) {
                     queue_count = queue_items.Count;
                     queue_bind = queue_items;
                 }

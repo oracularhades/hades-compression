@@ -12,13 +12,15 @@ namespace HadesCompression
 {
     public class queue
     {
+        public static int in_progress = 0;
+        public static List<string> queue_path = new List<string>();
         public static List<string> was_compressing_when_paused = new List<string>();
         public static bool was_paused = false;
         // TODO: Check all outputs were successful, and return an error if they weren't.
-        public static List<Objects.queue_item> get()
+        public static async Task<List<Objects.queue_item>> get()
         {
             try {
-                Objects.get_hadescompression_directories relevant_directories = Files.get_hadescompression_directories();
+                Objects.get_hadescompression_directories relevant_directories = await Files.get_hadescompression_directories();
                 string input_directory = relevant_directories.input_directory;
                 string output_directory = relevant_directories.output_directory;
                 string input_directory_processing = relevant_directories.input_directory_processing;
@@ -29,13 +31,9 @@ namespace HadesCompression
                 
                 List<Objects.queue_item> queue = new List<Objects.queue_item>();
 
-                List<String> known_files = new List<String>();
-
-                input_directory_processing_status.all.ForEach(element =>
+                queue_path.ForEach(element =>
                 {
                     string file_name = Path.GetFileName(element);
-                    known_files.Remove(file_name);
-                    known_files.Add(file_name);
 
                     string input_directory_filepath = input_directory + @$"\{file_name}";
                     string input_directory_processing_filepath = input_directory_processing + @$"\{file_name}";
@@ -74,35 +72,24 @@ namespace HadesCompression
                     }
                 });
 
-                input_directory_status.available_files.ForEach(element =>
-                {
-                    string file_name = Path.GetFileName(element);
-                    if (!known_files.Contains(file_name)) {
-                        string input_directory_processing_filepath = input_directory_processing + @$"\{file_name}";
-
-                        if (input_directory_processing_status.available_files.Contains(input_directory_processing_filepath) || input_directory_processing_status.unavailable_files.Contains(input_directory_processing_filepath))
-                        {
-                            queue.Add(new Objects.queue_item {
-                                status = "Waiting",
-                                path = element,
-                                paused = true,
-                                compressing = false,
-                                encoded = null,
-                                max_encoded = null
-                            });
-                        }
-                    }
-                });
+                // new Objects.queue_item {
+                //     status = "Waiting",
+                //     path = path,
+                //     paused = true,
+                //     compressing = false,
+                //     encoded = null,
+                //     max_encoded = null
+                // }
 
                 return queue;
             } catch (Exception e) {
                 Console.WriteLine("Queue error: "+e);
-                return null;
+                return new List<Objects.queue_item>();
             }
         }
-        public static List<Objects.queue_item> get_compressing()
+        public static async Task<List<Objects.queue_item>> get_compressing()
         {
-            List<Objects.queue_item> queue_items = queue.get();
+            List<Objects.queue_item> queue_items = await queue.get();
 
             List<Objects.queue_item> compressing = new List<Objects.queue_item>();
             foreach (Objects.queue_item item in queue_items)
@@ -115,25 +102,48 @@ namespace HadesCompression
         }
         public static async Task<int> queue_ffmpeg(string path)
         {
-            Objects.get_hadescompression_directories relevant_directories = Files.get_hadescompression_directories();
+            while (true)
+            {
+                Objects.get_hadescompression_directories relevant_directories = await Files.get_hadescompression_directories();
+                string output_directory = Files.is_valid_path(relevant_directories.input_directory_processing+@"\"+Path.GetFileName(path));
 
-            string output_directory = Files.is_valid_path(relevant_directories.input_directory_processing+@"\"+Path.GetFileName(path));
-            Objects.ffprobevideoinfo ffprobe = ffmpeg.ffprobe(path);
-            Objects.encoding_config encoding_config_from_ffprobe = ffmpeg.get_encoding_config_from_ffprobe(ffprobe, output_directory);
-            int exit_code = await ffmpeg.encode(encoding_config_from_ffprobe, null);
+                if (queue_path.IndexOf(output_directory) != 0)
+                {
+                    // We're not front of the queue yet.
+                    Debug.WriteLine("queue_ffmpeg Not front of queue yet.");
+                } else
+                {
+                    Objects.settings settings = await Settings.get();
+                    if (in_progress >= settings.thread_limit)
+                    {
+                        // Over concurrent encoding limit.
+                        Debug.WriteLine("queue_ffmpeg Tried to start, but over concurrent encoding limit.");
+                    } else {
+                        Debug.WriteLine("queue_ffmpeg Starting... "+path);
+                        
+                        Objects.ffprobevideoinfo ffprobe = ffmpeg.ffprobe(path);
+                        Objects.encoding_config encoding_config_from_ffprobe = ffmpeg.get_encoding_config_from_ffprobe(ffprobe, output_directory);
 
-            Debug.WriteLine($"FFMPEG EXIT CODE: {exit_code}");
+                        in_progress = in_progress+1;
+                        int exit_code = await ffmpeg.encode(encoding_config_from_ffprobe, null);
 
-            Debug.WriteLine($"EXIT CODE: {exit_code}");
-            if (exit_code == 0) {
-                ffmpeg.successful_clean_up(encoding_config_from_ffprobe.input_file, encoding_config_from_ffprobe.output_file);
+                        Debug.WriteLine($"queue_ffmpeg FFMPEG EXIT CODE: {exit_code}");
+                        if (exit_code == 0) {
+                            ffmpeg.successful_clean_up(encoding_config_from_ffprobe.input_file, encoding_config_from_ffprobe.output_file);
+                        }
+
+                        in_progress = in_progress-1;
+
+                        return exit_code;
+                    }
+                }
+
+                Thread.Sleep(400);
             }
-
-            return exit_code;
         }
-        public static void pause_all()
+        public static async void pause_all()
         {
-            List<Objects.queue_item> queue_items = queue.get();
+            List<Objects.queue_item> queue_items = await queue.get();
             foreach (Objects.queue_item item in queue_items)
             {
                 if (item.compressing != true) { continue; }

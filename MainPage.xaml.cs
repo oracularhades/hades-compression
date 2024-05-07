@@ -5,15 +5,98 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 
 namespace HadesCompression;
 
 public partial class MainPage : ContentPage, INotifyPropertyChanged
 {
     // encoding_paused
-    public ObservableCollection<String> input_directories { get; set; } = new ObservableCollection<String>();
-    public ObservableCollection<String> output_directories { get; set; } = new ObservableCollection<String>();
-    private bool automatically_compress_videos_last_value = false;
+    public bool update_safety_lock = true;
+    private string _youve_saved = "You've saved 0KB of space!";
+    public string Youve_saved
+    {
+        get => _youve_saved;
+        set
+        {
+            if (_youve_saved != value)
+            {
+                _youve_saved = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private string _Input_directory = null;
+    public string Input_directory
+    {
+        get => _Input_directory;
+        set
+        {
+            if (_Input_directory != value)
+            {
+                _Input_directory = value;
+                update_settings();
+                OnPropertyChanged();
+            }
+        }
+    }
+    private string _Output_directory = null;
+    public string Output_directory
+    {
+        get => _Output_directory;
+        set
+        {
+            if (_Output_directory != value)
+            {
+                _Output_directory = value;
+                update_settings();
+                OnPropertyChanged();
+            }
+        }
+    }
+    private int _CpuLimit;
+    public int CpuLimit
+    {
+        get => _CpuLimit;
+        set
+        {
+            if (_CpuLimit != value)
+            {
+                _CpuLimit = value;
+                update_settings();
+                OnPropertyChanged();
+            }
+        }
+    }
+    private int _MemoryLimit;
+    public int MemoryLimit
+    {
+        get => _MemoryLimit;
+        set
+        {
+            if (_MemoryLimit != value)
+            {
+                _MemoryLimit = value;
+                update_settings();
+                OnPropertyChanged();
+            }
+        }
+    }
+    private int _ThreadLimit;
+    public int ThreadLimit
+    {
+        get => _ThreadLimit;
+        set
+        {
+            if (_ThreadLimit != value)
+            {
+                _ThreadLimit = value;
+                update_settings();
+                OnPropertyChanged();
+            }
+        }
+    }
     private bool _automaticallyCompressVideos = true;
     public bool AutomaticallyCompressVideos
     {
@@ -23,6 +106,35 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
             if (_automaticallyCompressVideos != value)
             {
                 _automaticallyCompressVideos = value;
+                update_settings();
+                OnPropertyChanged();
+            }
+        }
+    }
+    private bool _encodeWhileRecording = false;
+    public bool EncodeWhileRecording
+    {
+        get => _encodeWhileRecording;
+        set
+        {
+            if (_encodeWhileRecording != value)
+            {
+                _encodeWhileRecording = value;
+                update_settings();
+                OnPropertyChanged();
+            }
+        }
+    }
+    private bool _encodeWhileStreaming = false;
+    public bool EncodeWhileStreaming
+    {
+        get => _encodeWhileStreaming;
+        set
+        {
+            if (_encodeWhileStreaming != value)
+            {
+                _encodeWhileStreaming = value;
+                update_settings();
                 OnPropertyChanged();
             }
         }
@@ -55,37 +167,64 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
         }
     }
 
+    private async void update_settings() {
+        if (update_safety_lock == true)
+        {
+            return;
+        }
+
+        Objects.settings settings = await Settings.get();
+        settings.input_directory = Input_directory;
+        settings.output_directory = Output_directory;
+        settings.cpu_limit = CpuLimit;
+        settings.memory_limit = MemoryLimit;
+        settings.thread_limit = ThreadLimit;
+        settings.automatically_compress_videos = AutomaticallyCompressVideos;
+        settings.encode_while_recording = EncodeWhileRecording;
+        settings.encode_while_streaming = EncodeWhileStreaming;
+
+        this.Dispatcher.Dispatch(async () => {
+            Settings.update(settings);
+        });
+    }
+
+    private async void update_youve_saved()
+    {
+        Objects.stats stats = await Stats.get();
+        Youve_saved = $"You've saved {Files.formatted_output(stats.storage_saved_GB)} of space!";
+    }
+
     public MainPage()
     {
         InitializeComponent();
-
         BindingContext = this;
-
-        Objects.get_hadescompression_directories directories = Files.get_hadescompression_directories();
-        input_directories.Add(directories.input_directory);
-        output_directories.Add(directories.output_directory);
 
         Task.Run(async () => Autocompress_Filehandling.start_watching());
         Task.Run(async () => {
-            AutomaticallyCompressVideos = await Autocompress_Filehandling.get_automatically_compress_videos();
+            Objects.settings settings = await Settings.get();
+            CpuLimit = settings.cpu_limit;
+            MemoryLimit = settings.memory_limit;
+            AutomaticallyCompressVideos = settings.automatically_compress_videos;
+            ThreadLimit = settings.thread_limit;
+            EncodeWhileRecording = settings.encode_while_recording;
+            EncodeWhileStreaming = settings.encode_while_streaming;
+
+            update_safety_lock = false;
+        });
+        Task.Run(async () => {
+            Objects.get_hadescompression_directories directories = await Files.get_hadescompression_directories();
+            Input_directory = directories.input_directory;
+            Output_directory = directories.output_directory;
         });
         Task.Run(async () => {
             while (true) {
-                Objects.obs_output obs_output = await Obs.get_obs_status(true, true);
-                Debug.WriteLine($"OBS STREAMING: {obs_output.stream.outputActive}");
+                update_youve_saved();
+                
+                bool block_because_of_status = await Obs.block_because_of_status();
+                Debug.WriteLine("block_because_of_status "+block_because_of_status);
+                if (block_because_of_status == false) {
+                    // No condition has been met where we need to block right now, so no use running logic to decide text to display.
 
-                if (obs_output.stream.outputActive == true)
-                {
-                    queue.pause_all();
-
-                    EncodingPaused = true;
-                    EncodingPausedMessage = "You're streaming, you've disabled encoding during stream to save resources. Encoding will continue when stream ends. Enjoy stream!";
-                } else if (obs_output.recording.outputActive == true || obs_output.recording.outputPaused == true) {
-                    queue.pause_all();
-
-                    EncodingPaused = true;
-                    EncodingPausedMessage = "You're recording, you've disabled encoding during recording to save resources. Encoding will continue when you finish recording.";
-                } else if (obs_output.stream.outputActive == false) {
                     if (queue.was_paused == true) {
                         queue.resume_all();
                         queue.was_paused = false;
@@ -93,48 +232,31 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
                         EncodingPaused = false;
                         EncodingPausedMessage = "";
                     }
+                } else {
+                    Objects.obs_output obs_output = await Obs.get_obs_status(true, true);
+
+                    if (obs_output.stream.outputActive == true)
+                    {
+                        queue.pause_all();
+
+                        EncodingPaused = true;
+                        EncodingPausedMessage = "You're streaming, you've disabled encoding during stream to save resources. Encoding will continue when stream ends. Enjoy stream!";
+                    } else if (obs_output.recording.outputActive == true || obs_output.recording.outputPaused == true) {
+                        queue.pause_all();
+
+                        EncodingPaused = true;
+                        EncodingPausedMessage = "You're recording, you've disabled encoding during recording to save resources. Encoding will continue when you finish recording.";
+                    }
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(200);
             }
         });
-    }
-
-    private void OnAutomaticallyCompressVideosToggled(object sender, ToggledEventArgs e)
-    {
-        bool value = e.Value;
-        if (value == automatically_compress_videos_last_value) {
-            // Stop infinite loop.
-            return;
-        }
-        Task.Run(async () => {
-            automatically_compress_videos_last_value = value;
-            AutomaticallyCompressVideos = await Autocompress_Filehandling.set_automatically_compress_videos(value);
-        });
-
-        // AutomaticallyCompressVideos = false;
-        // OnPropertyChanged();
-
-        // if (count == 1)
-        // 	CounterBtn.Text = $"Clicked {count} time";
-        // else
-        // 	CounterBtn.Text = $"Clicked {count} times";
-
-        // SemanticScreenReader.Announce(CounterBtn.Text);
     }
 
     private void OnCounterClicked(object sender, EventArgs e)
     {
         Navigation.PushAsync(new Advanced_Page());
         Debug.WriteLine("OnCounterClicked");
-        // AutomaticallyCompressVideos = false;
-        // OnPropertyChanged();
-
-        // if (count == 1)
-        // 	CounterBtn.Text = $"Clicked {count} time";
-        // else
-        // 	CounterBtn.Text = $"Clicked {count} times";
-
-        // SemanticScreenReader.Announce(CounterBtn.Text);
     }
 
     private async void OnPickFileClicked(object sender, EventArgs e)
@@ -147,7 +269,7 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
 
         Task.Run(async () => {
             Debug.WriteLine("START FFMPEG");
-            Objects.get_hadescompression_directories relevant_directories = Files.get_hadescompression_directories();
+            Objects.get_hadescompression_directories relevant_directories = await Files.get_hadescompression_directories();
 
             Objects.ffprobevideoinfo ffprobe = ffmpeg.ffprobe(result.FullPath);
             string output_directory = Files.is_valid_path(relevant_directories.output_directory+@"\"+Path.GetFileName(result.FullPath));

@@ -1,0 +1,7 @@
+Variables:
+        Required:
+            [input_directory]: The directory for the original, unencoded, file we want FFMPEG to use.
+            [output_directory]: Where we want FFMPEG to output to. This will always be OUTPUT_DIRECTORY/processing.
+
+        Optional:
+            [audio_tracks]: Automatically tells FFMPEG what audio tracks to use. Hades-Compression looks at the audio tracks in your original file, and then passes "-map 0:a:[audio track number]" to ffmpeg. This is required if you want to preserve multiple audio tracks. For example, if you have 3 audio tracks, Hades-compression will pass "-map 0:a:0 -map 0:a:1 -map 0:a:2" to FFMPEG. This tells FFMPEG to keep 3 seperate audio tracks.
