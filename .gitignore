@@ -11,3 +11,20 @@ ffmpeg/ffprobe.exe
 /obj
 
 .updater-information
+
+*.pfx
+*.crt
+*.cert
+*.cert
+*.ca-bundle
+*.pem
+*.key
+
+*.p7b
+*.p7c
+*.p7s
+*.keystore
+*.jks
+*.p12
+
+*.exe

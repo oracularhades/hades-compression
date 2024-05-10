@@ -15,7 +15,6 @@ namespace HadesCompression
         {
             Objects.advanced_settings advanced_settings = await advanced.get();
 
-            Debug.WriteLine("STARTED OBS");
             // advanced_settings.obs_address can only contain certain characters, you should never pass uncontrolled data like this.
             string arguments = $"--address {advanced_settings.obs_address}";
             if (stream == true) {
@@ -52,7 +51,6 @@ namespace HadesCompression
             string process_output = null;
             while ((process_output = ffmpeg_cmd.StandardOutput.ReadLine()) != null)
             {
-                Debug.WriteLine("process_output "+process_output);
                 if (process_output.StartsWith("OUTPUT: ")) {
                     output = process_output.Replace("OUTPUT: ", "");
                 }
@@ -62,7 +60,9 @@ namespace HadesCompression
                 // TODO: Display this as a notice to the user.
                 Debug.WriteLine("Couldn't reach OBS.");
 
-                return new Objects.obs_output {};
+                return new Objects.obs_output {
+                    failed_to_connect = true
+                };
             }
 
             ffmpeg_cmd.WaitForExit();

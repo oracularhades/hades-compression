@@ -20,7 +20,6 @@ namespace HadesCompression
             string output_format_value = await SecureStorage.Default.GetAsync("settings");
             if (output_format_value != null)
             {
-                Debug.WriteLine("Settingsget "+output_format_value);
                 Objects.settings deserialized_output = JsonConvert.DeserializeObject<Objects.settings>(output_format_value);
                 if (deserialized_output != null)
                 {
@@ -49,9 +48,6 @@ namespace HadesCompression
         }
         public static async void update(Objects.settings settings) {
             Objects.settings existing = await get();
-
-            Debug.WriteLine("SETTINGS EXISTING "+JsonConvert.SerializeObject(existing));
-            Debug.WriteLine("SETTINGS settings "+JsonConvert.SerializeObject(settings));
 
             if (object.Equals(existing, settings)) {
                 Debug.WriteLine("Settings doesn't need updating because it's already the same.");

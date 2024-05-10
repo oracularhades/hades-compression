@@ -12,6 +12,8 @@ namespace HadesCompression
 {
     public class Files
     {
+        public static List<String> allowed_file_types = new List<string> {"mkv", "mp4", "avi"};
+        
         public class get_available_unavailable_files_in_directory_output
         {
             public List<String> all { get; set; }
@@ -29,7 +31,7 @@ namespace HadesCompression
 
             foreach (var file in files)
             {
-                if (file.EndsWith(".mkv") == false && file.EndsWith(".mp4") == false)
+                if (allowed_file_types.Contains(file) == false)
                 {
                     // This file isn't what we're looking for.
                     continue;

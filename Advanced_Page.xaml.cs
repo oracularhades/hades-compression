@@ -1,11 +1,26 @@
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using Microsoft.Maui;
 
 namespace HadesCompression;
 
 public partial class Advanced_Page : ContentPage, INotifyPropertyChanged
 {
+	private string _App_version = "";
+    public string App_version
+    {
+        get => _App_version;
+        set
+        {
+            if (_App_version != value)
+            {
+                _App_version = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public bool update_safety_lock = true;
 	private string _ffmpeg_command_type = null;
     public string Ffmpeg_command_type
@@ -59,11 +74,12 @@ public partial class Advanced_Page : ContentPage, INotifyPropertyChanged
 	public Advanced_Page()
 	{
 		InitializeComponent();
-
+		BindingContext = this;
+		
+		App_version = "Version "+VersionTracking.CurrentVersion;
 		advanced_custom_command_component.IsVisible = false;
 		advanced_settings_component.IsVisible = false;
 
-		BindingContext = this;
 		Task.Run(async () => {
             Objects.advanced_settings advanced_settings = await advanced.get();
 

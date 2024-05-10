@@ -113,6 +113,7 @@ namespace HadesCompression
         public class obs_output {
             public obs_stream stream { get; set; }
             public obs_recording recording { get; set; }
+            public bool failed_to_connect { get; set; }
         }
         public class obs_stream {
             public bool outputActive { get; set; }
@@ -128,7 +129,7 @@ namespace HadesCompression
             public int cpu_limit { get; set; } = 60;
             public int memory_limit { get; set; } = 60;
             public int thread_limit { get; set; } = 3;
-            public bool automatically_compress_videos { get; set; } = true;
+            public bool automatically_compress_videos { get; set; } = false;
             public bool encode_while_recording { get; set; }
             public bool encode_while_streaming { get; set; }
         }

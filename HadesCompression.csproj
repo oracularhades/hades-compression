@@ -62,14 +62,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="ffmpeg.exe" />
-	  <None Remove="ffplay.exe" />
-	  <None Remove="ffprobe.exe" />
-	  <None Remove="Resources\Images\pause-solid.svg" />
-	  <None Remove="Resources\Images\play-solid.svg" />
-	  <None Remove="Resources\Images\trash_can.png" />
-	  <None Remove="Resources\Images\trash_can_solid.svg" />
-	  <None Remove="rust-obs.exe" />
+		<None Remove="ffmpeg.exe" />
+		<None Remove="ffplay.exe" />
+		<None Remove="ffprobe.exe" />
+		<None Remove="Resources\Images\pause-solid.svg" />
+		<None Remove="Resources\Images\play-solid.svg" />
+		<None Remove="Resources\Images\trash_can.png" />
+		<None Remove="Resources\Images\trash_can_solid.svg" />
+		<None Remove="rust-obs.exe" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -11,10 +11,7 @@
             Padding="30,20"
             Spacing="16">
 
-            <Label 
-                Text="Remember CPU/Memory/GPU limit, and speed changer"
-                FontSize="20"
-                IsVisible="false" />
+            <custom_components:UpdateAvailableComponent/>
 
             <VerticalStackLayout>
                 <Label

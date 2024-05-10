@@ -21,7 +21,6 @@ namespace HadesCompression
             string output_format_value = await SecureStorage.Default.GetAsync("advanced_settings");
             if (output_format_value != null)
             {
-                Debug.WriteLine("AdvancedSettingsChange "+output_format_value);
                 Objects.advanced_settings deserialized_output = JsonConvert.DeserializeObject<Objects.advanced_settings>(output_format_value);
                 if (deserialized_output != null)
                 {
@@ -73,8 +72,6 @@ namespace HadesCompression
                 Debug.WriteLine("OBS address contains illegal characters.");
                 return;
             }
-
-            Debug.WriteLine("AdvancedSettingsChange INCOMING "+JsonConvert.SerializeObject(advanced_settings));
 
             string output = JsonConvert.SerializeObject(advanced_settings);
             await SecureStorage.Default.SetAsync("advanced_settings", output);

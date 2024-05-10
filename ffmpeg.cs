@@ -1,12 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Diagnostics;
+using System.Reflection;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text;
 using System.Text.Json;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace HadesCompression
 {
@@ -23,7 +26,7 @@ namespace HadesCompression
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = @"C:\Users\User\Documents\GitHub\HadesCompression\ffmpeg\ffprobe.exe",
+                    FileName = Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)), "ffprobe.exe"),
                     Arguments = $"-v quiet -print_format json -show_format -show_streams \"{file_path}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -43,10 +46,10 @@ namespace HadesCompression
             ffprobe_cmd.WaitForExit();
 
             // After the process has exited, you can get the status code
-            int statusCode = ffprobe_cmd.ExitCode;
+            int status_code = ffprobe_cmd.ExitCode;
 
             // Output the results
-            Debug.WriteLine($"Exit Code: {statusCode}");
+            Debug.WriteLine($"Exit Code: {status_code}");
             Debug.WriteLine($"Output: {output}");
             Debug.WriteLine($"Error: {error}");
 
@@ -100,73 +103,90 @@ namespace HadesCompression
                 audio_tracks = audio_tracks
             };
         }
+        
+        public static async Task<string> get_arguments(Objects.encoding_config encoding_config, string pick_up_after)
+        {
+            try {
+                string arguments = $"-i \"{Files.is_valid_path(encoding_config.input_file)}\" -map 0:v -c:a aac";
+
+                Objects.settings settings = await Settings.get();
+
+                int cpu_limit_percent = settings.cpu_limit;
+                if (cpu_limit_percent != 0)
+                {
+                    int cpu_threads = Environment.ProcessorCount;
+                    double percent_to_threads = cpu_threads * (cpu_limit_percent / 100.0);
+                    arguments = arguments + $" -threads {percent_to_threads}";
+                }
+
+                int memory_limit_percent = settings.memory_limit;
+                if (memory_limit_percent != null)
+                {
+                    int memory_bytes = System.Runtime.InteropServices.Marshal.SizeOf(typeof(double));
+                    double percent_to_bytes = memory_bytes * (memory_limit_percent / 100.0);
+                    arguments = arguments + $" -bufsize {percent_to_bytes}";
+                }
+
+                if (encoding_config.quality > 0)
+                {
+                    arguments = arguments + $" -vf \"scale=-2:{encoding_config.quality}\"";
+                }
+
+                if (encoding_config.vcodec != null)
+                {
+                    arguments = arguments + $" -c:v {encoding_config.vcodec}";
+                }
+
+                if (encoding_config.max_rate != null)
+                {
+                    arguments = arguments + $" -maxrate {encoding_config.max_rate}";
+                }
+
+                if (encoding_config.crf != 0)
+                {
+                    arguments = arguments + $" -crf {encoding_config.crf}";
+                }
+
+                if (encoding_config.preset != null)
+                {
+                    arguments = arguments + $" -preset {encoding_config.preset}";
+                }
+                if (pick_up_after != null)
+                {
+                    arguments = arguments + $" -ss {pick_up_after}";
+                }
+
+                foreach (int audio_stream in encoding_config.audio_tracks) {
+                    arguments = arguments + $" -map 0:a:{audio_stream}";
+                }
+
+                arguments = arguments + $" \"{Files.is_valid_path(encoding_config.output_file)}\"";
+
+                return arguments;
+            } catch (Exception e)
+            {
+                Debug.WriteLine("ERROR GETTING FFMPEG ARGUMENTS "+e);
+                return null;
+            }
+        }
 
         public static async Task<int> encode(Objects.encoding_config encoding_config, string pick_up_after)
         {
             ffmpeg_original_files.Remove(encoding_config.output_file);
             ffmpeg_original_files.Add(encoding_config.output_file, encoding_config.input_file);
 
-            Debug.WriteLine("ffmpeg encode start");
-            string arguments = $"-y -i \"{Files.is_valid_path(encoding_config.input_file)}\" -map 0:v -c:a aac";
+            string arguments = await get_arguments(encoding_config, pick_up_after);
 
-            string cpu_limit_percent = await SecureStorage.Default.GetAsync("cpu_limit");
-            if (cpu_limit_percent != null)
-            {
-                int cpu_threads = Environment.ProcessorCount;
-                double percent_to_threads = cpu_threads * (int.Parse(cpu_limit_percent) / 100.0);
-                arguments = arguments + $" --threads {percent_to_threads}";
-            }
-
-            string memory_limit_percent = await SecureStorage.Default.GetAsync("memory_limit");
-            if (memory_limit_percent != null)
-            {
-                int memory_bytes = System.Runtime.InteropServices.Marshal.SizeOf(typeof(double));
-                double percent_to_bytes = memory_bytes * (int.Parse(memory_limit_percent) / 100.0);
-                arguments = arguments + $" --threads {percent_to_bytes}";
-            }
-
-            if (encoding_config.quality > 0)
-            {
-                arguments = arguments + $" -vf \"scale=-2:{encoding_config.quality}\"";
-            }
-
-            if (encoding_config.vcodec != null)
-            {
-                arguments = arguments + $" -c:v {encoding_config.vcodec}";
-            }
-
-            if (encoding_config.max_rate != null)
-            {
-                arguments = arguments + $" -maxrate {encoding_config.max_rate}";
-            }
-
-            if (encoding_config.crf != 0)
-            {
-                arguments = arguments + $" -crf {encoding_config.crf}";
-            }
-
-            if (encoding_config.preset != null)
-            {
-                arguments = arguments + $" -preset {encoding_config.preset}";
-            }
             if (pick_up_after != null)
             {
-                arguments = arguments + $" -ss {pick_up_after}";
+                arguments = "-y " + arguments;
             }
-
-            foreach (int audio_stream in encoding_config.audio_tracks) {
-                arguments = arguments + $" -map 0:a:{audio_stream}";
-            }
-
-            arguments = arguments + $" \"{Files.is_valid_path(encoding_config.output_file)}\"";
-
-            Debug.WriteLine("ffmpeg Arguments: "+arguments);
 
             Process ffmpeg_cmd = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "./ffmpeg/ffmpeg.exe",
+                    FileName = Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)), "ffmpeg.exe"),
                     Arguments = arguments + " -flush_packets 1",
                     // UseShellExecute = false,
                     CreateNoWindow = true,
@@ -185,11 +205,10 @@ namespace HadesCompression
             string process_output = null;
             while ((process_output = ffmpeg_cmd.StandardError.ReadLine()) != null)
             {
-                Debug.WriteLine("FFMPEG "+process_output);
                 try {
+                    Console.WriteLine("FFMPEG process_output "+process_output);
                     ffmpeg_progress.Remove(encoding_config.output_file);
                     ffmpeg_progress.Add(encoding_config.output_file, get_time_encoded(process_output));
-                    Debug.WriteLine($"AFTER ADDING {ffmpeg_progress[encoding_config.output_file]}");
                 } catch (Exception e) {
                     Console.WriteLine("FFMPEG PROGRESS ERROR "+e);
                 }
@@ -227,46 +246,181 @@ namespace HadesCompression
         }
         public static async void play(string path)
         {
-            // TODO: This will break if path changes from being /processing to the actual original file.
-            string pick_up_after = await SecureStorage.Default.GetAsync("pick_up_after_"+path);
-            if (pick_up_after == null)
-            {
-                // TODO: handle no value here.
-                Debug.WriteLine("FFMPEG NOT VALUE FOR PICK_UP_AFTER");
-                return;
-            }
+            try {
+                // TODO: This will break if path changes from being /processing to the actual original file.
+                string pick_up_after = await SecureStorage.Default.GetAsync("pick_up_after_"+path);
+                if (pick_up_after == null)
+                {
+                    // TODO: handle no value here.
+                    Debug.WriteLine("FFMPEG NOT VALUE FOR PICK_UP_AFTER");
+                    return;
+                }
 
-            string original_file = Files.is_valid_path(ffmpeg.ffmpeg_original_files[path]);
-            Objects.ffprobevideoinfo ffprobe = ffmpeg.ffprobe(original_file);
-            Objects.encoding_config encoding_config_from_ffprobe = ffmpeg.get_encoding_config_from_ffprobe(ffprobe, path);
-            int exit_code = await ffmpeg.encode(encoding_config_from_ffprobe, pick_up_after);
+                string original_file = Files.is_valid_path(ffmpeg.ffmpeg_original_files[path]);
+                Objects.ffprobevideoinfo ffprobe = ffmpeg.ffprobe(original_file);
+                Objects.encoding_config encoding_config_from_ffprobe = ffmpeg.get_encoding_config_from_ffprobe(ffprobe, path);
+                int exit_code = await ffmpeg.encode(encoding_config_from_ffprobe, pick_up_after);
 
-            SecureStorage.Remove("pick_up_after_"+path);
-            if (exit_code == 0) {
-                ffmpeg.successful_clean_up(encoding_config_from_ffprobe.input_file, encoding_config_from_ffprobe.output_file);
+                SecureStorage.Remove("pick_up_after_"+path);
+                if (exit_code == 0) {
+                    ffmpeg.successful_clean_up(encoding_config_from_ffprobe.input_file, encoding_config_from_ffprobe.output_file);
+                }
+            } catch (Exception e) {
+                Console.WriteLine("ffmpeg play ERROR "+e);
             }
         }
-        public static async void pause(string path, Objects.queue_item queue_item)
+        public static async Task<bool> pause(string path, Objects.queue_item queue_item)
         {
-            Debug.WriteLine("PAUSED OCCURED! "+path);
+            Debug.WriteLine("STOPPING APPLICATION: PAUSE: "+path);
             // TODO: This will break if path changes from being /processing to the actual original file.
-            ffmpeg.ffmpeg_processes[path].Close();
+            ffmpeg.ffmpeg_processes[path].Kill();
             ffmpeg.ffmpeg_processes.Remove(path);
             await SecureStorage.SetAsync("pick_up_after_"+path, queue_item.encoded);
-            Debug.WriteLine("Should have ended process");
+
+            return true;
         }
         public static async void successful_clean_up(string input_file, string output_file)
         {
+            queue.queue_path.Remove(output_file);
+
+            FileInfo fileInfo = new FileInfo(input_file);
+            long file_size_in_bytes = fileInfo.Length;
+
             string file_name = Path.GetFileName(input_file);
-            Objects.get_hadescompression_directories relevant_directories = Files.get_hadescompression_directories();
+            Objects.get_hadescompression_directories relevant_directories = await Files.get_hadescompression_directories();
             
             string processed_input_file_directory = relevant_directories.input_directory+@"\processed";
-            Directory.CreateDirectory(processed_input_file_directory);
-            Debug.WriteLine($"MOVE1 {input_file} {processed_input_file_directory+@"\"+file_name}");
             File.Move(input_file, processed_input_file_directory+@"\"+file_name);
 
-            Debug.WriteLine($"MOVE2 {output_file} {relevant_directories.output_directory+@"\"+file_name}");
             File.Move(output_file, relevant_directories.output_directory+@"\"+file_name);
+
+            await Stats.add_saved(Stats.convert_bytes_to_GB(file_size_in_bytes));
+        }
+
+        public static async Task<List<string>> get_formats()
+        {
+            try {
+                Process formats_cmd = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)), "ffprobe.exe"),
+                        Arguments = $"-formats",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    },
+                    EnableRaisingEvents = true,
+                };
+
+                formats_cmd.Start();
+
+                string output = formats_cmd.StandardOutput.ReadToEnd();
+                string error = formats_cmd.StandardError.ReadToEnd();
+
+                formats_cmd.WaitForExit();
+
+                int status_code = formats_cmd.ExitCode;
+
+                if (status_code != 0) {
+                    Debug.WriteLine("Formats ffmpeg exit status code was not 0");
+                    return new List<String>(); // TODO: Throw error;
+                }
+
+                List<string> formats = new List<String>();
+
+                string[] lines = output.Split('\n');
+
+                bool has_started = false;
+
+                foreach (string line in lines)
+                {
+                    if (line.Contains("---")) {
+                        has_started = true;
+                    } else if (has_started == true && !string.IsNullOrWhiteSpace(line))
+                    {
+                        string[] parts = line.Split(new[] { ' ' }, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                        bool can_decode = parts[0].Contains("D");
+                        bool can_encode = parts[0].Contains("E");
+
+                        List <string> parts_new = parts.ToList<string>();
+
+                        string code = parts_new[1];
+                        string description = line.Substring(line.IndexOf(code) + code.Length).Trim();
+
+                        if (can_encode == true)
+                        {
+                            formats.Add(code);
+                        }
+                    }
+                }
+
+                Debug.WriteLine("Formats finished fine");
+
+                return formats;
+            } catch (Exception e)
+            {
+                Debug.WriteLine("FORMATS ERROR "+e);
+                return new List<String>();
+            }
+        }
+
+        public static async Task<List<string>> get_codecs()
+        {
+            Process codecs_cmd = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "ffprobe.exe"),
+                    Arguments = $"-codecs",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                },
+                EnableRaisingEvents = true,
+            };
+
+            codecs_cmd.Start();
+
+            string output = codecs_cmd.StandardOutput.ReadToEnd();
+            string error = codecs_cmd.StandardError.ReadToEnd();
+
+            codecs_cmd.WaitForExit();
+
+            int status_code = codecs_cmd.ExitCode;
+
+            if (status_code != 0) {
+                Debug.WriteLine("Codecs ffmpeg exit status code was not 0");
+                return new List<String>(); // TODO: Throw error;
+            }
+
+            List<string> codecs = new List<String>();
+
+            string[] lines = output.Split('\n');
+
+            bool has_started = false;
+
+            foreach (string line in lines)
+            {
+                if (line.Contains("---")) {
+                    has_started = true;
+                } else if (has_started == true && !string.IsNullOrWhiteSpace(line))
+                {
+                    string[] parts = line.Split(new[] { ' ' }, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                    bool is_video = parts[0].Contains("V");
+
+                    List <string> parts_new = parts.ToList<string>();
+
+                    string code = parts_new[1];
+                    string description = line.Substring(line.IndexOf(code) + code.Length).Trim();
+
+                    if (is_video == true) {
+                        codecs.Add(code);
+                    }
+                }
+            }
+
+            return codecs;
         }
     }
 }

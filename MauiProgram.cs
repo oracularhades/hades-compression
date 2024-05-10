@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Diagnostics;
+using Microsoft.Extensions.Logging;
+using Microsoft.Maui.LifecycleEvents;
 
 namespace HadesCompression
 {
@@ -9,6 +11,16 @@ namespace HadesCompression
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .ConfigureLifecycleEvents(events =>
+                {
+    #if WINDOWS
+                    events.AddWindows(windows => windows
+                    .OnWindowCreated(window =>
+                    {
+                        window.Closed += MainPage.window_closed;
+                    }));
+    #endif
+                })
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

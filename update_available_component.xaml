@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:custom_components="clr-namespace:HadesCompression"
+             x:Class="HadesCompression.UpdateAvailableComponent"
+             Shell.NavBarIsVisible="false">
+             
+    <VerticalStackLayout Spacing="8" Padding="4" BackgroundColor="#851016" IsVisible="True">
+        <Label
+            Text="Update available: [..]"
+            FontSize="16" />
+
+        <Button
+            x:Name="update_button"
+            Text="Download update"
+            SemanticProperties.Hint="Allows user start Hades-compression update"
+            Clicked="OnDownloadUpdate"
+            HorizontalOptions="Start"
+            FontSize="14"
+        />
+    </VerticalStackLayout>
+</ContentView>

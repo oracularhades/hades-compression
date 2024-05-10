@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using Microsoft.UI.Xaml;
 
 namespace HadesCompression;
 
@@ -184,7 +185,7 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
 
     private void hades_compression_will_use()
     {
-        Hadescompression_will_use_a_max_of = $"Hades-compression will use a maximum of {CpuLimit * ThreadLimit}% CPU and {MemoryLimit * ThreadLimit}% at any given time.";
+        Hadescompression_will_use_a_max_of = $"Hades-compression will use a maximum of {CpuLimit * ThreadLimit}% CPU and {MemoryLimit * ThreadLimit}% memory at any given time.";
     }
 
     private async void update_settings() {
@@ -244,7 +245,6 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
                 update_youve_saved();
                 
                 bool block_because_of_status = await Obs.block_because_of_status();
-                Debug.WriteLine("block_because_of_status "+block_because_of_status);
                 if (block_because_of_status == false) {
                     // No condition has been met where we need to block right now, so no use running logic to decide text to display.
 
@@ -280,6 +280,12 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
     {
         Navigation.PushAsync(new Advanced_Page());
         Debug.WriteLine("OnCounterClicked");
+    }
+
+    public static async void window_closed(object sender, WindowEventArgs e)
+    {
+        Debug.WriteLine("STOPPING APPLICATION");
+        await queue.pause_all();
     }
 
     private async void OnPickFileClicked(object sender, EventArgs e)

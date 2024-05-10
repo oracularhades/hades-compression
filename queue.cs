@@ -123,11 +123,7 @@ namespace HadesCompression
                         
                         Objects.ffprobevideoinfo ffprobe = ffmpeg.ffprobe(path);
 
-                        Debug.WriteLine("queue_ffmpeg PAST 2 "+path);
-
                         Objects.encoding_config encoding_config_from_ffprobe = ffmpeg.get_encoding_config_from_ffprobe(ffprobe, output_directory);
-
-                        Debug.WriteLine("queue_ffmpeg PAST 3 "+path);
 
                         in_progress = in_progress+1;
                         int exit_code = await ffmpeg.encode(encoding_config_from_ffprobe, null);
@@ -146,22 +142,23 @@ namespace HadesCompression
                 Thread.Sleep(400);
             }
         }
-        public static async void pause_all()
+        public static async Task<bool> pause_all()
         {
             List<Objects.queue_item> queue_items = await queue.get();
             foreach (Objects.queue_item item in queue_items)
             {
                 if (item.compressing != true) { continue; }
-                ffmpeg.pause(item.path, item);
+                await ffmpeg.pause(item.path, item);
                 was_compressing_when_paused.Remove(item.path);
                 was_compressing_when_paused.Add(item.path);
             }
 
             was_paused = true;
+
+            return true;
         }
         public static void resume_all()
         {
-            Debug.WriteLine("PAUSED [RESUMING]");
             foreach (string path in was_compressing_when_paused)
             {
                 ffmpeg.play(path);
