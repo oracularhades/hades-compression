@@ -1,4 +1,5 @@
 {
-  "latest_version": "test-build-v0.0.22.0",
-  "latest_download_link": "https://github.com/oracularhades/hades-compression/releases/download/test-build-v0.0.22.0/HadesCompression_0.0.23.0_Test.zip"
+  "latest_version": "test-build-v0.0.23.0",
+  "latest_download_link": "https://github.com/oracularhades/hades-compression/releases/download/test-build-v0.0.22.0/HadesCompression_0.0.23.0_Test.zip",
+  "release_notes": "https://github.com/oracularhades/hades-compression/releases/tag/test-build-v0.0.23.0"
 }
