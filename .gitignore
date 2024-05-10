@@ -9,3 +9,5 @@ ffmpeg/ffprobe.exe
 /obj/Debug
 /obj/Debug
 /obj
+
+.updater-information
