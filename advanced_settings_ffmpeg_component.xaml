@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:custom_components="clr-namespace:HadesCompression"
+             x:Class="HadesCompression.AdvancedSettingsFFmpegComponent"
+             Shell.NavBarIsVisible="false">
+             
+    <ScrollView>
+        <VerticalStackLayout Spacing="10">
+            <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                <Label Text="Output format" VerticalOptions="Center" WidthRequest="400" />
+                <Picker x:Name="output_format_picker" ItemsSource="{Binding Formats}" SelectedItem="{Binding Output_format}"/>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                <Label Text="Preset" VerticalOptions="Center" WidthRequest="400" />
+                <Picker x:Name="preset_picker" SelectedItem="{Binding Preset}">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>ultrafast</x:String>
+                            <x:String>superfast</x:String>
+                            <x:String>veryfast</x:String>
+                            <x:String>faster</x:String>
+                            <x:String>fast</x:String>
+                            <x:String>medium</x:String>
+                            <x:String>slow</x:String>
+                            <x:String>slower</x:String>
+                            <x:String>veryslow</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                <Label Text="Max quality" VerticalOptions="Center" WidthRequest="400" />
+                <Picker x:Name="quality_picker" SelectedItem="{Binding Max_quality}">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>2160</x:String>
+                            <x:String>1440</x:String>
+                            <x:String>1080</x:String>
+                            <x:String>720</x:String>
+                            <x:String>480</x:String>
+                            <x:String>360</x:String>
+                            <x:String>240</x:String>
+                            <x:String>144</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                <Label Text="Codec" VerticalOptions="Center" WidthRequest="400" />
+                <HorizontalStackLayout Spacing="4">
+                    <Picker x:Name="vcodec_picker" ItemsSource="{Binding Codecs}" SelectedItem="{Binding Codec}"/>
+                </HorizontalStackLayout>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                <Label Text="Maximum video bitrate" VerticalOptions="Center" WidthRequest="400" />
+                <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding Max_video_bitrate}"/>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                <Label Text="Maximum audio bitrate" VerticalOptions="Center" WidthRequest="400" />
+                <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding Max_audio_bitrate}"/>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
+                <Label Text="Crf" VerticalOptions="Center" WidthRequest="400"/>
+                <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding Crf}"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

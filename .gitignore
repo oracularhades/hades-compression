@@ -4,11 +4,10 @@ ffmpeg/ffmpeg.exe
 ffmpeg/ffplay.exe
 ffmpeg/ffprobe.exe
 /.vs
+/.vs/*
 /obj
-/obj
+/obj/*
 /obj/Debug
-/obj/Debug
-/obj
 
 .updater-information
 

@@ -37,23 +37,19 @@ public partial class ObsSettingsComponent : ContentView, INotifyPropertyChanged
         }
     }
 
-	private void AdvancedSettingsUpdate()
+	private async void AdvancedSettingsUpdate()
     {
         if (update_safety_lock == true)
         {
             return;
         }
 
+        Objects.advanced_settings settings = await advanced.get();
+        settings.obs_address = Obs_address;
+        settings.obs_password = Obs_password;
+
         this.Dispatcher.Dispatch(async () => {
-            Objects.advanced_settings settings = await advanced.get();
-            settings.obs_address = Obs_address;
-            settings.obs_password = Obs_password;
-
-            Debug.WriteLine("Obs_passwordDD "+Obs_password);
-
-            this.Dispatcher.Dispatch(async () => {
-                advanced.update(settings);
-            });
+            advanced.update(settings);
         });
 	}
     
@@ -65,12 +61,10 @@ public partial class ObsSettingsComponent : ContentView, INotifyPropertyChanged
 		Task.Run(async () => {
 			Objects.advanced_settings advanced_settings = await advanced.get();
 
-			this.Dispatcher.Dispatch(() => {
-				Obs_address = advanced_settings.obs_address;
-				Obs_password = advanced_settings.obs_password;
+            Obs_address = advanced_settings.obs_address;
+            Obs_password = advanced_settings.obs_password;
 
-                update_safety_lock = false;
-			});
+            update_safety_lock = false;
 		});
 	}
 }

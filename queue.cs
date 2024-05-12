@@ -47,13 +47,18 @@ namespace HadesCompression
                                 // max_encoded = max_encoded.Substring(0, Math.Min(ffmpeg.ffprobe_video_length[input_directory_filepath].Length, 11));
                                 max_encoded = ffmpeg.ffprobe_video_length[input_directory_filepath];
                             }
+
+                            string encoded = "";
+                            if (ffmpeg.ffmpeg_progress.ContainsKey(element)) {
+                                encoded = ffmpeg.ffmpeg_progress[element];
+                            }
                             
                             queue.Add(new Objects.queue_item {
                                 status = "Compressing",
                                 path = element,
                                 paused = false,
                                 compressing = true,
-                                encoded = ffmpeg.ffmpeg_progress[element],
+                                encoded = encoded,
                                 max_encoded = max_encoded
                             });
                         } catch (Exception e) {

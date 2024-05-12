@@ -18,15 +18,17 @@
                 TextColor="Grey" />
         </HorizontalStackLayout>
 
-        <VerticalStackLayout Spacing="8">
+        <VerticalStackLayout>
             <CollectionView            
                 ItemsSource="{Binding queue_bind}">
                 
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="6" />
+                </CollectionView.ItemsLayout>
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <VerticalStackLayout Margin="15" Spacing="4">
-                            <custom_components:QueueItemComponent BindingContext="{Binding .}"/>
-                        </VerticalStackLayout>
+                        <custom_components:QueueItemComponent BindingContext="{Binding .}"/>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

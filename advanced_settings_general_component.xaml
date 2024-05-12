@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:custom_components="clr-namespace:HadesCompression"
+             x:Class="HadesCompression.AdvancedSettingsGeneralComponent"
+             Shell.NavBarIsVisible="false">
+             
+    <ScrollView>
+        <VerticalStackLayout Spacing="10">
+        
+            <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="10">
+                <Label Text="'You have uncompressed files' reminder threshold" VerticalOptions="Center" WidthRequest="400"/>
+                <HorizontalStackLayout Spacing="4">
+                    <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding You_have_uncompressed_files_threshold}"/>
+                    <Label Text="GB" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

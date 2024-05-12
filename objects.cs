@@ -101,6 +101,7 @@ namespace HadesCompression
             public string input_directory { get; set; }
             public string output_directory { get; set; }
             public string input_directory_processing { get; set; }
+            public string input_directory_processed { get; set; }
         }
         public class queue_item {
             public bool paused { get; set; }
@@ -145,9 +146,15 @@ namespace HadesCompression
             public int max_audio_bitrate { get; set; }
             public int crf { get; set; } = 18;
             public string ffmpeg_custom_command { get; set; }
+            public int you_have_uncompressed_files_reminder_threshold_GB { get; set; } = 40;
         }
         public class stats {
-            public double storage_saved_GB { get; set; }
+            public long storage_saved_GB { get; set; }
+        }
+        public class updater_information {
+            public string latest_version { get; set; }
+            public string latest_download_link { get; set; }
+            public string release_notes { get; set; }
         }
     }
 }

@@ -57,16 +57,23 @@ namespace HadesCompression
 
             Objects.ffprobevideoinfo ffprobe_output = JsonConvert.DeserializeObject<Objects.ffprobevideoinfo>(output);
 
-            foreach (var stream in ffprobe_output.streams)
-            {
-                if (stream.codec_type == "video") {
-                    ffprobe_video_length.Remove(file_path);
-                    ffprobe_video_length.Add(file_path, stream.tags.DURATION);
-                    break;
-                }
-            }
+            ffprobe_video_length.Remove(file_path);
+            ffprobe_video_length.Add(file_path, ffmpeg.seconds_to_formatted(double.Parse(ffprobe_output.format.duration)));
 
             return ffprobe_output;
+        }
+        public static string seconds_to_formatted(double input_seconds)
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(input_seconds);
+
+            int hours = timeSpan.Hours;
+            int minutes = timeSpan.Minutes;
+            int seconds = timeSpan.Seconds;
+            int milliseconds = timeSpan.Milliseconds;
+
+            string formattedTime = $"{hours:00}:{minutes:00}:{seconds:00}.{milliseconds:000}";
+
+            return formattedTime;
         }
 
         public static Objects.encoding_config get_encoding_config_from_ffprobe(Objects.ffprobevideoinfo ffprobe_output, string output_file)
@@ -289,10 +296,10 @@ namespace HadesCompression
             string file_name = Path.GetFileName(input_file);
             Objects.get_hadescompression_directories relevant_directories = await Files.get_hadescompression_directories();
             
-            string processed_input_file_directory = relevant_directories.input_directory+@"\processed";
-            File.Move(input_file, processed_input_file_directory+@"\"+file_name);
+            string processed_input_file_directory = relevant_directories.input_directory_processed;
+            Files.move_file_with_duplicate_protection(input_file, processed_input_file_directory+@"\"+file_name);
 
-            File.Move(output_file, relevant_directories.output_directory+@"\"+file_name);
+            Files.move_file_with_duplicate_protection(output_file, relevant_directories.output_directory+@"\"+file_name);
 
             await Stats.add_saved(Stats.convert_bytes_to_GB(file_size_in_bytes));
         }

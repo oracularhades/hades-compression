@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
-using Microsoft.UI.Xaml;
 
 namespace HadesCompression;
 
@@ -15,7 +14,7 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
     // encoding_paused
     // Hadescompression_will_use_a_max_of
     public bool update_safety_lock = true;
-    private string _youve_saved = "You've saved 0KB of space!";
+    private string _youve_saved = "You've saved [..] of space!";
     public string Youve_saved
     {
         get => _youve_saved;
@@ -280,12 +279,6 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
     {
         Navigation.PushAsync(new Advanced_Page());
         Debug.WriteLine("OnCounterClicked");
-    }
-
-    public static async void window_closed(object sender, WindowEventArgs e)
-    {
-        Debug.WriteLine("STOPPING APPLICATION");
-        await queue.pause_all();
     }
 
     private async void OnPickFileClicked(object sender, EventArgs e)

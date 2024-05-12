@@ -47,7 +47,7 @@ public partial class AdvancedCustomCommandComponent : ContentView, INotifyProper
         settings.ffmpeg_custom_command = Ffmpeg_command;
 
         this.Dispatcher.Dispatch(async () => {
-		    advanced.update(settings);
+            advanced.update(settings);
         });
 	}
 
@@ -78,11 +78,8 @@ public partial class AdvancedCustomCommandComponent : ContentView, INotifyProper
                 ffmpeg_output_command = clothed_ffmpeg_command;
             }
 
+            Ffmpeg_command = ffmpeg_output_command;
             Ffmpeg_variables = File.ReadAllText("ffmpeg_variable_description.txt");
-
-			this.Dispatcher.Dispatch(() => {
-				Ffmpeg_command = ffmpeg_output_command;
-			});
             update_safety_lock = false;
 		});
 	}

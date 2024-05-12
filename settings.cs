@@ -27,20 +27,8 @@ namespace HadesCompression
                 }
             }
 
-            int cpu_limit = settings_object.cpu_limit;
-            int memory_limit = settings_object.memory_limit;
-            int thread_limit = settings_object.thread_limit;
-            bool encode_while_recording = settings_object.encode_while_recording;
-            bool encode_while_streaming = settings_object.encode_while_streaming;
-
             try {
-                return new Objects.settings {
-                    cpu_limit = cpu_limit,
-                    memory_limit = memory_limit,
-                    thread_limit = thread_limit,
-                    encode_while_recording = encode_while_recording,
-                    encode_while_streaming = encode_while_streaming
-                };
+                return settings_object;
             } catch (Exception e) {
                 Console.WriteLine("Queue error: "+e);
                 return null;

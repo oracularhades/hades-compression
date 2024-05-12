@@ -20,9 +20,12 @@ namespace HadesCompression
 
                 Objects.settings settings = await Settings.get();
 
+                Debug.WriteLine("STARTED WATCHING past settings");
+
                 bool block_because_of_status = await Obs.block_because_of_status();
                 if (block_because_of_status == true) {
                     // User doesn't want to encode because OBS is doing something (streaming/recording/etc), so we don't.
+                    Debug.WriteLine("Autocompress.Filehandling.start_watching() is block_because_of_status");
                 } else {
                     if (settings.automatically_compress_videos == false) {
                         Debug.WriteLine("get_automatically_compress_videos is false");
@@ -38,8 +41,10 @@ namespace HadesCompression
                     Files.get_available_unavailable_files_in_directory_output output_directory_status = Files.get_available_unavailable_files_in_directory(output_directory);
                     Files.get_available_unavailable_files_in_directory_output input_directory_processing_status = Files.get_available_unavailable_files_in_directory(input_directory_processing);
 
+                    Debug.WriteLine("ELEMENT 111");
                     input_directory_status.available_files.ForEach(element =>
                     {
+                        Debug.WriteLine("ELEMENT "+element);
                         string file_name = Path.GetFileName(element);
 
                         string input_directory_processing_filepath = input_directory_processing + @$"\{file_name}";

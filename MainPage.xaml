@@ -11,7 +11,8 @@
             Padding="30,20"
             Spacing="16">
 
-            <custom_components:UpdateAvailableComponent/>
+            <custom_components:UpdateAvailableComponent IsVisible="{Binding New_update}"/>
+            <custom_components:UncompressedFilesToDelete IsVisible="{Binding Show_uncompressed_files_to_delete_banner}"/>
 
             <VerticalStackLayout>
                 <Label

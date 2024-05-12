@@ -3,22 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HadesCompression.QueueItemComponent">
     <HorizontalStackLayout Spacing="8">
-        <ImageButton
-            x:Name="PickImage"
-            Source="play_solid.png"
-            CornerRadius="6"
-            IsVisible="{Binding paused}"
-            Clicked="OnQueuePlayClicked"
-            CommandParameter="{Binding .}"
-        />
 
-        <ImageButton
-            Source="pause_solid.png"
-            CornerRadius="6"
-            IsVisible="{Binding compressing}"
-            Clicked="OnQueuePauseClicked"
-            CommandParameter="{Binding .}"
-        />
+        <HorizontalStackLayout Spacing="4">
+            <ImageButton
+                Source="play_solid.png"
+                CornerRadius="6"
+                IsVisible="{Binding paused}"
+                Clicked="OnQueuePlayClicked"
+                CommandParameter="{Binding .}"
+            />
+            <ImageButton
+                Source="pause_solid.png"
+                CornerRadius="6"
+                IsVisible="{Binding compressing}"
+                Clicked="OnQueuePauseClicked"
+                CommandParameter="{Binding .}"
+            />
+        </HorizontalStackLayout>
 
         <VerticalStackLayout HorizontalOptions="Start">
             <HorizontalStackLayout Spacing="8">

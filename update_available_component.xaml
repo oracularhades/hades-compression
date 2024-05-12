@@ -4,19 +4,32 @@
              xmlns:custom_components="clr-namespace:HadesCompression"
              x:Class="HadesCompression.UpdateAvailableComponent"
              Shell.NavBarIsVisible="false">
-             
-    <VerticalStackLayout Spacing="8" Padding="4" BackgroundColor="#851016" IsVisible="True">
-        <Label
-            Text="Update available: [..]"
-            FontSize="16" />
 
-        <Button
-            x:Name="update_button"
-            Text="Download update"
-            SemanticProperties.Hint="Allows user start Hades-compression update"
-            Clicked="OnDownloadUpdate"
-            HorizontalOptions="Start"
-            FontSize="14"
-        />
-    </VerticalStackLayout>
+    <Frame CornerRadius="5" BorderColor="#454545" BackgroundColor="#454545" Padding="4">
+        <VerticalStackLayout Spacing="8" Padding="4">
+            <Label
+                Text="Update available: v{Binding Version}"
+                FontSize="18" />
+
+            <HorizontalStackLayout Spacing="8">
+                <Button
+                    x:Name="update_button"
+                    Text="Download update"
+                    SemanticProperties.Hint="Allows user start Hades-compression update"
+                    Clicked="OnDownloadUpdate"
+                    HorizontalOptions="Start"
+                    FontSize="14"
+                />
+
+                <Button
+                    x:Name="release_notes_button"
+                    Text="View release notes"
+                    SemanticProperties.Hint="Allows user to view release notes"
+                    Clicked="OnViewReleaseNotesClicked"
+                    HorizontalOptions="Start"
+                    FontSize="14"
+                />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Frame>
 </ContentView>

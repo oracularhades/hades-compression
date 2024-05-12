@@ -11,23 +11,34 @@ namespace HadesCompression
     {
         public App()
         {
-            // Check for other instances of Hades-Compression.
-            try
-            {
-                Process[] processes = Process.GetProcessesByName("HadesCompression");
-                if (processes.Length > 1) {
-                    Debug.WriteLine("INTENTIONALLY CRASHING BECAUSE ANOTHER INSTANCE OF HADESCOMPRESSION IS OPEN. THIS IS NOT A BUG, THIS IS INTENTIONAL. DONT GET CONFUSED.");
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error checking process: {ex.Message}");
-            }
-
             InitializeComponent();
 
             MainPage = new AppShell();
+
+            if (processes.check_if_another_instance_of_hades_compression() == true)
+            {
+                System.Diagnostics.Process.GetCurrentProcess().Kill();
+                return;
+            }
+        }
+
+        protected override Window CreateWindow(IActivationState activationState)
+        {
+            Window window = base.CreateWindow(activationState);
+
+            window.Destroying += async (s, e) =>
+            {
+                Debug.WriteLine("WINDOW DESTROYING");
+
+                if (processes.check_if_another_instance_of_hades_compression() == false)
+                {
+                    await queue.pause_all();
+                }
+            };
+
+            window.Width = 800;
+
+            return window;
         }
     }
 }

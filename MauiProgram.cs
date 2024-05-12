@@ -11,16 +11,16 @@ namespace HadesCompression
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .ConfigureLifecycleEvents(events =>
-                {
-    #if WINDOWS
-                    events.AddWindows(windows => windows
-                    .OnWindowCreated(window =>
-                    {
-                        window.Closed += MainPage.window_closed;
-                    }));
-    #endif
-                })
+//                 .ConfigureLifecycleEvents(events =>
+//                 {
+// #if WINDOWS
+//                     events.AddWindows(windows => windows
+//                     .OnWindowCreated(window =>
+//                     {
+//                         window.Destroying += MainPage.window_closed;
+//                     }));
+// #endif
+//                 })
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

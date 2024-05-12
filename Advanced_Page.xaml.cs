@@ -83,9 +83,7 @@ public partial class Advanced_Page : ContentPage, INotifyPropertyChanged
 		Task.Run(async () => {
             Objects.advanced_settings advanced_settings = await advanced.get();
 
-			this.Dispatcher.Dispatch(() => {
-				Ffmpeg_command_type = advanced_settings.ffmpeg_command_type;
-			});
+			Ffmpeg_command_type = advanced_settings.ffmpeg_command_type;
 
 			ffmpeg_command_type_logic();
 		});

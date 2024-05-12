@@ -21,31 +21,45 @@
                 />
             </VerticalStackLayout>
 
-            <Label 
-                Text="OBS integration"
-                FontSize="16"
-                TextColor="LightGrey"
-            />
+            <VerticalStackLayout>
+                <Label 
+                    Text="General"
+                    FontSize="16"
+                    TextColor="LightGrey"
+                />
 
-            <custom_components:ObsSettingsComponent x:Name="obs_settings_component"/>
+                <custom_components:AdvancedSettingsGeneralComponent x:Name="AdvancedSettingsGeneralComponent"/>
+            </VerticalStackLayout>
 
-            <Label 
-                Text="FFMPEG"
-                FontSize="16"
-                TextColor="LightGrey"
-            />
+            <VerticalStackLayout Spacing="10">
+                <Label
+                    Text="OBS integration"
+                    FontSize="16"
+                    TextColor="LightGrey"
+                />
 
-            <Picker x:Name="ffmpeg_command_type_picker" SelectedItem="{Binding Ffmpeg_command_type}">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Settings</x:String>
-                        <x:String>Custom FFMPEG command</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
+                <custom_components:ObsSettingsComponent x:Name="obs_settings_component"/>
+            </VerticalStackLayout>
 
-            <custom_components:AdvancedSettingsComponent x:Name="advanced_settings_component"/>
-            <custom_components:AdvancedCustomCommandComponent x:Name="advanced_custom_command_component"/>
+            <VerticalStackLayout Spacing="10">
+                <Label 
+                    Text="FFmpeg"
+                    FontSize="16"
+                    TextColor="LightGrey"
+                />
+
+                <Picker x:Name="ffmpeg_command_type_picker" SelectedItem="{Binding Ffmpeg_command_type}">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Settings</x:String>
+                            <x:String>Custom FFMPEG command</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+
+                <custom_components:AdvancedSettingsFFmpegComponent x:Name="advanced_settings_component"/>
+                <custom_components:AdvancedCustomCommandComponent x:Name="advanced_custom_command_component"/>
+            </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

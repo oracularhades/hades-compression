@@ -28,30 +28,8 @@ namespace HadesCompression
                 }
             }
 
-            string obs_address = advanced_settings_object.obs_address;
-            string obs_password = advanced_settings_object.obs_password;
-            string ffmpeg_command_type = advanced_settings_object.ffmpeg_command_type;
-            string output_format = advanced_settings_object.output_format;
-            string preset = advanced_settings_object.preset;
-            string max_quality = advanced_settings_object.max_quality;
-            string codec = advanced_settings_object.codec;
-            int max_video_bitrate = advanced_settings_object.max_video_bitrate;
-            int max_audio_bitrate = advanced_settings_object.max_video_bitrate;
-            int crf = advanced_settings_object.crf;
-
             try {
-                return new Objects.advanced_settings {
-                    obs_address = obs_address,
-                    obs_password = obs_password,
-                    ffmpeg_command_type = ffmpeg_command_type,
-                    output_format = output_format,
-                    preset = preset,
-                    max_quality = max_quality,
-                    codec = codec,
-                    max_video_bitrate = max_video_bitrate,
-                    max_audio_bitrate = max_audio_bitrate,
-                    crf = crf
-                };
+                return advanced_settings_object;
             } catch (Exception e) {
                 Console.WriteLine("Queue error: "+e);
                 return null;

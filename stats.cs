@@ -25,7 +25,7 @@ namespace HadesCompression
                 }
             }
 
-            double storage_saved_GB = stats_object.storage_saved_GB;
+            long storage_saved_GB = stats_object.storage_saved_GB;
 
             try {
                 return new Objects.stats {
@@ -46,21 +46,21 @@ namespace HadesCompression
             string output = JsonConvert.SerializeObject(stats);
             await SecureStorage.Default.SetAsync("stats", output);
         }
-        public static async Task<double> add_saved(double saved_in_GB) {
+        public static async Task<long> add_saved(long saved_in_GB) {
             Objects.stats existing = await get();
             
-            double new_stat = existing.storage_saved_GB + saved_in_GB;
+            long new_stat = existing.storage_saved_GB + saved_in_GB;
             existing.storage_saved_GB = new_stat;
 
             Stats.update(existing);
 
             return new_stat;
         }
-        public static double convert_bytes_to_GB(long bytes)
+        public static long convert_bytes_to_GB(long bytes)
         {
             // # AI generated
-            const double bytesInGB = 1024 * 1024 * 1024;
-            return (double)bytes / bytesInGB;
+            const long bytesInGB = 1024 * 1024 * 1024;
+            return (long)bytes / bytesInGB;
         }
     }
 }

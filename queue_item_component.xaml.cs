@@ -14,13 +14,10 @@ namespace HadesCompression
 
         private void OnQueuePlayClicked(object sender, EventArgs e)
         {
-            Debug.WriteLine("ffmpeg QUEUE PLAY CLICKED");
             var button = (ImageButton)sender;
             var queue_item = (Objects.queue_item)button.CommandParameter;
 
             string path = queue_item.path;
-
-            Debug.WriteLine("ffmpeg QUEUE PLAY CLICKED AFTER");
 
             Task.Run(async () => ffmpeg.play(path));
         }
