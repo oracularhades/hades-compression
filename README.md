@@ -27,6 +27,12 @@ Please be sure to check your video is as expected before deleting the uncompress
 
 I did not build the video compression here, though I'm sure every developer wishes they could take credit for it. All video encoding is done via [FFmpeg](https://ffmpeg.org/). I built the UI and awesome additional features listed above.
 
+https://github.com/oracularhades/hades-compression?tab=Apache-2.0-1-ov-file#readme
+
+The application uses your internet connection to ping Github while checking for new updates. You can read Github's terms of service and privacy policy here (you're already on Github, but these release notes may be used elsewhere ;]):
+  https://docs.github.com/en/site-policy/github-terms/github-terms-of-service
+  https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement
+
 For potential contributors: I've barely done any code clean-up, I will go back and optimise/comment the code, but bare with me. These are still test builds.
 
 # How to install
