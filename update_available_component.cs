@@ -83,7 +83,7 @@ public partial class UpdateAvailableComponent : ContentView, INotifyPropertyChan
                 if (deserialized_output.latest_version != VersionTracking.CurrentVersion)
                 {
                     New_update = true;
-                    New_version = deserialized_output.latest_version;
+                    New_version = $"Update available: v{deserialized_output.latest_version}";
                     Lastest_download_link = deserialized_output.latest_download_link;
                     Release_notes = deserialized_output.release_notes;
                 }
