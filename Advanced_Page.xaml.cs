@@ -1,12 +1,17 @@
-using System.Diagnostics;
 using System.ComponentModel;
-using System.Collections.ObjectModel;
-using Microsoft.Maui;
+using System.Runtime.CompilerServices;
 
 namespace HadesCompression;
 
-public partial class Advanced_Page : ContentPage, INotifyPropertyChanged
+public class AdvancedPageBindingsStruct : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
 	private string _App_version = "";
     public string App_version
     {
@@ -31,35 +36,39 @@ public partial class Advanced_Page : ContentPage, INotifyPropertyChanged
             if (_ffmpeg_command_type != value)
             {
                 _ffmpeg_command_type = value;
-				ffmpeg_command_type_logic();
                 OnPropertyChanged();
             }
         }
     }
+}
+
+public partial class Advanced_Page : ContentPage, INotifyPropertyChanged
+{
+	public AdvancedPageBindingsStruct AdvancedPage_Bindings = new AdvancedPageBindingsStruct{};
 
 	public async void ffmpeg_command_type_logic()
 	{
 		Objects.advanced_settings settings = await advanced.get();
 
-		if (Ffmpeg_command_type == "Settings" || Ffmpeg_command_type == "settings")
+		if (AdvancedPage_Bindings.Ffmpeg_command_type == "Settings" || AdvancedPage_Bindings.Ffmpeg_command_type == "settings")
 		{
 			advanced_custom_command_component.IsVisible = false;
 			advanced_settings_component.IsVisible = true;
 
-			if (Ffmpeg_command_type == "Settings") {
+			if (AdvancedPage_Bindings.Ffmpeg_command_type == "Settings") {
 				settings.ffmpeg_command_type = "settings";
 				this.Dispatcher.Dispatch(async () => {
 					advanced.update(settings);
 				});
 			}
 
-			Ffmpeg_command_type = "Settings";
-		} else if (Ffmpeg_command_type == "Custom FFMPEG command" || Ffmpeg_command_type == "custom_ffmpeg_command")
+			AdvancedPage_Bindings.Ffmpeg_command_type = "Settings";
+		} else if (AdvancedPage_Bindings.Ffmpeg_command_type == "Custom FFMPEG command" || AdvancedPage_Bindings.Ffmpeg_command_type == "custom_ffmpeg_command")
 		{
 			advanced_custom_command_component.IsVisible = true;
 			advanced_settings_component.IsVisible = false;
 
-			if (Ffmpeg_command_type == "Custom FFMPEG command")
+			if (AdvancedPage_Bindings.Ffmpeg_command_type == "Custom FFMPEG command")
 			{
 				settings.ffmpeg_command_type = "custom_ffmpeg_command";
 				this.Dispatcher.Dispatch(async () => {
@@ -67,25 +76,29 @@ public partial class Advanced_Page : ContentPage, INotifyPropertyChanged
 				});
 			}
 
-			Ffmpeg_command_type = "Custom FFMPEG command";
+			AdvancedPage_Bindings.Ffmpeg_command_type = "Custom FFMPEG command";
 		}
 	}
 	
 	public Advanced_Page()
 	{
 		InitializeComponent();
-		BindingContext = this;
+		BindingContext = AdvancedPage_Bindings;
 		
-		App_version = "Version "+VersionTracking.CurrentVersion;
+		AdvancedPage_Bindings.App_version = "Version "+VersionTracking.CurrentVersion;
 		advanced_custom_command_component.IsVisible = false;
 		advanced_settings_component.IsVisible = false;
 
 		Task.Run(async () => {
             Objects.advanced_settings advanced_settings = await advanced.get();
 
-			Ffmpeg_command_type = advanced_settings.ffmpeg_command_type;
+			AdvancedPageBindingsStruct AdvancedPage_Bindings_v = AdvancedPage_Bindings;
+			AdvancedPage_Bindings_v.Ffmpeg_command_type = advanced_settings.ffmpeg_command_type;
+			AdvancedPage_Bindings = AdvancedPage_Bindings_v;
 
-			ffmpeg_command_type_logic();
+			AdvancedPage_Bindings.PropertyChanged += (sender, e) => {
+				ffmpeg_command_type_logic();
+			};
 		});
 	}
 }

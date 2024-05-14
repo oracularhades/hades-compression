@@ -45,20 +45,7 @@ public partial class AdvancedCustomCommandComponent : ContentView, INotifyProper
         }
     }
 
-    private AdvancedCustomCommandComponentStruct _Advanced_custom_command_component = new AdvancedCustomCommandComponentStruct{};
-
-    public AdvancedCustomCommandComponentStruct Advanced_custom_command_component
-    {
-        get => _Advanced_custom_command_component;
-        set
-        {
-            if (!Object.Equals(_Advanced_custom_command_component, _Advanced_custom_command_component))
-            {
-                _Advanced_custom_command_component = value;
-                OnPropertyChanged(nameof(_Advanced_custom_command_component));
-            }
-        }
-    }
+    private AdvancedCustomCommandComponentStruct Advanced_custom_command_component = new AdvancedCustomCommandComponentStruct{};
 
     public bool update_safety_lock = true;
 
@@ -66,6 +53,11 @@ public partial class AdvancedCustomCommandComponent : ContentView, INotifyProper
 	{
 		InitializeComponent();
 		BindingContext = Advanced_custom_command_component;
+
+        Advanced_custom_command_component.PropertyChanged += (sender, e) =>
+        {
+            Console.WriteLine($"{e.PropertyName} property has changed.");
+        };
 
 		Task.Run(async () => {
             Objects.get_hadescompression_directories relevant_directories = await Files.get_hadescompression_directories();

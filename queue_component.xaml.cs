@@ -46,19 +46,7 @@ namespace HadesCompression
 
     public partial class QueueComponent : ContentView, INotifyPropertyChanged
     {
-        private QueueDataStruct _queue_data = new QueueDataStruct{};
-        public QueueDataStruct queue_data
-        {
-            get => _queue_data;
-            set
-            {
-                if (!Object.Equals(_queue_data, _queue_data))
-                {
-                    _queue_data = value;
-                    OnPropertyChanged(nameof(_queue_data));
-                }
-            }
-        }
+        private QueueDataStruct queue_data = new QueueDataStruct{};
 
         private async void get_queue()
         {
@@ -79,7 +67,7 @@ namespace HadesCompression
         {
             InitializeComponent();
 
-            BindingContext = this;
+            BindingContext = queue_data;
 
             Task.Run(async () => get_queue());
         }

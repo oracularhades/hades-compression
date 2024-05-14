@@ -1,11 +1,6 @@
-﻿using Microsoft.Maui.Storage;
-using System.Diagnostics;
-using System.Runtime.Serialization;
-using System.Collections.ObjectModel;
+﻿using System.Diagnostics;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Storage;
 
 namespace HadesCompression;
 
@@ -221,19 +216,7 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
     // Hadescompression_will_use_a_max_of
     public bool update_safety_lock = true;
 
-    private MainPageBindingsStruct _MainPage_Bindings = new MainPageBindingsStruct{};
-    public MainPageBindingsStruct MainPage_Bindings
-    {
-        get => _MainPage_Bindings;
-        set
-        {
-            if (!Object.Equals(_MainPage_Bindings, _MainPage_Bindings))
-            {
-                _MainPage_Bindings = value;
-                OnPropertyChanged(nameof(_MainPage_Bindings));
-            }
-        }
-    }
+    public MainPageBindingsStruct MainPage_Bindings = new MainPageBindingsStruct{};
 
     private void hades_compression_will_use()
     {
@@ -242,7 +225,7 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
         MainPage_Bindings = MainPage_Bindings_v;
     }
 
-    private async void update_settings() {
+    public async void update_settings() {
         if (update_safety_lock == true)
         {
             return;
@@ -278,6 +261,12 @@ public partial class MainPage : ContentPage, INotifyPropertyChanged
     {
         InitializeComponent();
         BindingContext = MainPage_Bindings;
+
+        MainPage_Bindings.PropertyChanged += (sender, e) =>
+        {
+            Console.WriteLine($"{e.PropertyName} property has changed.");
+            update_settings();
+        };
 
         Task.Run(async () => Autocompress_Filehandling.start_watching());
         Task.Run(async () => {

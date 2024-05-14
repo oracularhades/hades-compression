@@ -36,6 +36,8 @@ namespace HadesCompression
             }
         }
         public static async void update(Objects.advanced_settings advanced_settings) {
+            Debug.WriteLine("ADVANCED SETTINGS UPDATE RUNNING");
+            
             Objects.advanced_settings existing = await get();
 
             if (object.Equals(existing, advanced_settings)) {
