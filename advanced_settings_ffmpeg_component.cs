@@ -1,141 +1,161 @@
 using System.Diagnostics;
-using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace HadesCompression;
+
+public class AdvancedSettingsFFmpegStruct : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private string _output_format;
+        public string output_format
+        {
+            get => _output_format;
+            set
+            {
+                if (_output_format != value)
+                {
+                    _output_format = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _preset;
+        public string preset
+        {
+            get => _preset;
+            set
+            {
+                if (_preset != value)
+                {
+                    _preset = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _max_quality;
+        public string max_quality
+        {
+            get => _max_quality;
+            set
+            {
+                if (_max_quality != value)
+                {
+                    _max_quality = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _codec;
+        public string codec
+        {
+            get => _codec;
+            set
+            {
+                if (_codec != value)
+                {
+                    _codec = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _max_video_bitrate;
+        public int max_video_bitrate
+        {
+            get => _max_video_bitrate;
+            set
+            {
+                if (_max_video_bitrate != value)
+                {
+                    _max_video_bitrate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _max_audio_bitrate;
+        public int max_audio_bitrate
+        {
+            get => _max_audio_bitrate;
+            set
+            {
+                if (_max_audio_bitrate != value)
+                {
+                    _max_audio_bitrate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _crf;
+        public int crf
+        {
+            get => _crf;
+            set
+            {
+                if (_crf != value)
+                {
+                    _crf = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private ObservableCollection<string> _formats = new ObservableCollection<string> {"Loading"};
+        public ObservableCollection<string> Formats
+        {
+            get => _formats;
+            set
+            {
+                if (_formats != value)
+                {
+                    _formats = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private ObservableCollection<string> _codecs = new ObservableCollection<string> {"Loading"};
+        public ObservableCollection<string> Codecs
+        {
+            get => _codecs;
+            set
+            {
+                if (_codecs != value)
+                {
+                    _codecs = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+    }
 
 public partial class AdvancedSettingsFFmpegComponent : ContentView, INotifyPropertyChanged
 {
     public bool update_safety_lock = true;
-	private ObservableCollection<string> _formats = new ObservableCollection<string>();
-    public ObservableCollection<string> Formats
-    {
-        get => _formats;
-        set
-        {
-            if (_formats != value)
-            {
-                _formats = value;
-                OnPropertyChanged();
-            }
-        }
-    }
 
-	private ObservableCollection<string> _codecs = new ObservableCollection<string>();
-    public ObservableCollection<string> Codecs
-    {
-        get => _codecs;
-        set
-        {
-            if (_codecs != value)
-            {
-                _codecs = value;
-                OnPropertyChanged();
-            }
-        }
-    }
+    private AdvancedSettingsFFmpegStruct _advanced_settings_ffmpeg_component = new AdvancedSettingsFFmpegStruct{};
 
-	private string _output_format = null;
-    public string Output_format
+    public AdvancedSettingsFFmpegStruct Advanced_custom_command_component
     {
-        get => _output_format;
+        get => _advanced_settings_ffmpeg_component;
         set
         {
-            if (_output_format != value)
+            if (!Object.Equals(Advanced_custom_command_component, _advanced_settings_ffmpeg_component))
             {
-                _output_format = value;
-				AdvancedSettingsUpdate();
-                OnPropertyChanged();
-            }
-        }
-    }
-
-	private string _preset = null;
-    public string Preset
-    {
-        get => _preset;
-        set
-        {
-            if (_preset != value)
-            {
-                _preset = value;
-				AdvancedSettingsUpdate();
-                OnPropertyChanged();
-            }
-        }
-    }
-
-	private string _max_quality = null;
-    public string Max_quality
-    {
-        get => _max_quality;
-        set
-        {
-            if (_max_quality != value)
-            {
-                _max_quality = value;
-				AdvancedSettingsUpdate();
-                OnPropertyChanged();
-            }
-        }
-    }
-
-	private string _codec = null;
-    public string Codec
-    {
-        get => _codec;
-        set
-        {
-            if (_codec != value)
-            {
-                _codec = value;
-				AdvancedSettingsUpdate();
-                OnPropertyChanged();
-            }
-        }
-    }
-
-	private int _max_video_bitrate = 0;
-    public int Max_video_bitrate
-    {
-        get => _max_video_bitrate;
-        set
-        {
-            if (_max_video_bitrate != value)
-            {
-                _max_video_bitrate = value;
-				AdvancedSettingsUpdate();
-                OnPropertyChanged();
-            }
-        }
-    }
-
-	private int _max_audio_bitrate = 0;
-    public int Max_audio_bitrate
-    {
-        get => _max_audio_bitrate;
-        set
-        {
-            if (_max_audio_bitrate != value)
-            {
-                _max_audio_bitrate = value;
-				AdvancedSettingsUpdate();
-                OnPropertyChanged();
-            }
-        }
-    }
-
-	private int _crf = 0;
-    public int Crf
-    {
-        get => _crf;
-        set
-        {
-            if (_crf != value)
-            {
-                _crf = value;
-				AdvancedSettingsUpdate();
-                OnPropertyChanged();
+                _advanced_settings_ffmpeg_component = value;
+                OnPropertyChanged(nameof(Advanced_custom_command_component));
             }
         }
     }
@@ -147,13 +167,13 @@ public partial class AdvancedSettingsFFmpegComponent : ContentView, INotifyPrope
             return;
         }
         Objects.advanced_settings settings = await advanced.get();
-        settings.output_format = Output_format;
-        settings.preset = Preset;
-        settings.max_quality = Max_quality;
-        settings.codec = Codec;
-        settings.max_video_bitrate = Max_video_bitrate;
-        settings.max_audio_bitrate = Max_audio_bitrate;
-        settings.crf = Crf;
+        settings.output_format = Advanced_custom_command_component.output_format;
+        settings.preset = Advanced_custom_command_component.preset;
+        settings.max_quality = Advanced_custom_command_component.max_quality;
+        settings.codec = Advanced_custom_command_component.codec;
+        settings.max_video_bitrate = Advanced_custom_command_component.max_video_bitrate;
+        settings.max_audio_bitrate = Advanced_custom_command_component.max_audio_bitrate;
+        settings.crf = Advanced_custom_command_component.crf;
 
         this.Dispatcher.Dispatch(async () => {
             advanced.update(settings);
@@ -163,10 +183,7 @@ public partial class AdvancedSettingsFFmpegComponent : ContentView, INotifyPrope
 	public AdvancedSettingsFFmpegComponent()
 	{
 		InitializeComponent();
-		BindingContext = this;
-
-		Formats.Add("Loading");
-		Codecs.Add("Loading");
+		BindingContext = Advanced_custom_command_component;
 
 		Task.Run(async () => {
 			List<string> formats_v = await ffmpeg.get_formats();
@@ -187,15 +204,18 @@ public partial class AdvancedSettingsFFmpegComponent : ContentView, INotifyPrope
 
 			Objects.advanced_settings advanced_settings = await advanced.get();
 
-            Formats = formats_as_collection;
-            Codecs = codecs_as_collection;
-            Output_format = advanced_settings.output_format;
-            Preset = advanced_settings.preset;
-            Max_quality = advanced_settings.max_quality;
-            Codec = advanced_settings.codec;
-            Max_video_bitrate = advanced_settings.max_video_bitrate;
-            Max_audio_bitrate = advanced_settings.max_audio_bitrate;
-            Crf = advanced_settings.crf;
+            AdvancedSettingsFFmpegStruct Advanced_custom_command_component_v = Advanced_custom_command_component;
+            Advanced_custom_command_component_v.Formats = formats_as_collection;
+            Advanced_custom_command_component_v.Codecs = codecs_as_collection;
+
+            Advanced_custom_command_component_v.output_format = advanced_settings.output_format;
+            Advanced_custom_command_component_v.preset = advanced_settings.preset;
+            Advanced_custom_command_component_v.max_quality = advanced_settings.max_quality;
+            Advanced_custom_command_component_v.codec = advanced_settings.codec;
+            Advanced_custom_command_component_v.max_video_bitrate = advanced_settings.max_video_bitrate;
+            Advanced_custom_command_component_v.max_audio_bitrate = advanced_settings.max_audio_bitrate;
+            Advanced_custom_command_component_v.crf = advanced_settings.crf;
+            Advanced_custom_command_component = Advanced_custom_command_component_v;
 
             update_safety_lock = false;
 		});

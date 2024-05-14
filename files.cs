@@ -100,6 +100,7 @@ namespace HadesCompression
             Directory.CreateDirectory(input_directory);
             Directory.CreateDirectory(output_directory);
             Directory.CreateDirectory(processing_directory);
+            Directory.CreateDirectory(processed_directory);
 
             return new Objects.get_hadescompression_directories {
                 input_directory = input_directory,

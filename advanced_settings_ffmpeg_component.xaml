@@ -3,18 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:custom_components="clr-namespace:HadesCompression"
              x:Class="HadesCompression.AdvancedSettingsFFmpegComponent"
+             x:DataType="custom_components:AdvancedSettingsFFmpegStruct"
              Shell.NavBarIsVisible="false">
              
     <ScrollView>
         <VerticalStackLayout Spacing="10">
             <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                 <Label Text="Output format" VerticalOptions="Center" WidthRequest="400" />
-                <Picker x:Name="output_format_picker" ItemsSource="{Binding Formats}" SelectedItem="{Binding Output_format}"/>
+                <Picker x:Name="output_format_picker" ItemsSource="{Binding Formats}" SelectedItem="{Binding output_format}"/>
             </HorizontalStackLayout>
 
             <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                 <Label Text="Preset" VerticalOptions="Center" WidthRequest="400" />
-                <Picker x:Name="preset_picker" SelectedItem="{Binding Preset}">
+                <Picker x:Name="preset_picker" SelectedItem="{Binding preset}">
                     <Picker.ItemsSource>
                         <x:Array Type="{x:Type x:String}">
                             <x:String>ultrafast</x:String>
@@ -33,7 +34,7 @@
 
             <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                 <Label Text="Max quality" VerticalOptions="Center" WidthRequest="400" />
-                <Picker x:Name="quality_picker" SelectedItem="{Binding Max_quality}">
+                <Picker x:Name="quality_picker" SelectedItem="{Binding max_quality}">
                     <Picker.ItemsSource>
                         <x:Array Type="{x:Type x:String}">
                             <x:String>2160</x:String>
@@ -52,23 +53,23 @@
             <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                 <Label Text="Codec" VerticalOptions="Center" WidthRequest="400" />
                 <HorizontalStackLayout Spacing="4">
-                    <Picker x:Name="vcodec_picker" ItemsSource="{Binding Codecs}" SelectedItem="{Binding Codec}"/>
+                    <Picker x:Name="vcodec_picker" ItemsSource="{Binding Codecs}" SelectedItem="{Binding codec}"/>
                 </HorizontalStackLayout>
             </HorizontalStackLayout>
 
             <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                 <Label Text="Maximum video bitrate" VerticalOptions="Center" WidthRequest="400" />
-                <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding Max_video_bitrate}"/>
+                <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding max_video_bitrate}"/>
             </HorizontalStackLayout>
 
             <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                 <Label Text="Maximum audio bitrate" VerticalOptions="Center" WidthRequest="400" />
-                <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding Max_audio_bitrate}"/>
+                <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding max_audio_bitrate}"/>
             </HorizontalStackLayout>
 
             <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="60">
                 <Label Text="Crf" VerticalOptions="Center" WidthRequest="400"/>
-                <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding Crf}"/>
+                <Entry Placeholder="0" Keyboard="Numeric" Text="{Binding crf}"/>
             </HorizontalStackLayout>
         </VerticalStackLayout>
     </ScrollView>

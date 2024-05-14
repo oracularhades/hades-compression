@@ -144,7 +144,7 @@ namespace HadesCompression
                     }
                 }
 
-                Thread.Sleep(400);
+                Thread.Sleep(1000);
             }
         }
         public static async Task<bool> pause_all()
@@ -162,12 +162,16 @@ namespace HadesCompression
 
             return true;
         }
-        public static void resume_all()
+        public static async Task<bool> resume_all()
         {
             foreach (string path in was_compressing_when_paused)
             {
                 ffmpeg.play(path);
             }
+
+            was_paused = false;
+
+            return true;
         }
     }
 }

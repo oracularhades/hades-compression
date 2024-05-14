@@ -29,36 +29,36 @@ namespace HadesCompression
                 } else {
                     if (settings.automatically_compress_videos == false) {
                         Debug.WriteLine("get_automatically_compress_videos is false");
-                        return;
                     }
+                    else {
+                        Objects.get_hadescompression_directories relevant_directories = await Files.get_hadescompression_directories();
+                        string input_directory = relevant_directories.input_directory;
+                        string output_directory = relevant_directories.output_directory;
+                        string input_directory_processing = relevant_directories.input_directory_processing;
 
-                    Objects.get_hadescompression_directories relevant_directories = await Files.get_hadescompression_directories();
-                    string input_directory = relevant_directories.input_directory;
-                    string output_directory = relevant_directories.output_directory;
-                    string input_directory_processing = relevant_directories.input_directory_processing;
+                        Files.get_available_unavailable_files_in_directory_output input_directory_status = Files.get_available_unavailable_files_in_directory(input_directory);
+                        Files.get_available_unavailable_files_in_directory_output output_directory_status = Files.get_available_unavailable_files_in_directory(output_directory);
+                        Files.get_available_unavailable_files_in_directory_output input_directory_processing_status = Files.get_available_unavailable_files_in_directory(input_directory_processing);
 
-                    Files.get_available_unavailable_files_in_directory_output input_directory_status = Files.get_available_unavailable_files_in_directory(input_directory);
-                    Files.get_available_unavailable_files_in_directory_output output_directory_status = Files.get_available_unavailable_files_in_directory(output_directory);
-                    Files.get_available_unavailable_files_in_directory_output input_directory_processing_status = Files.get_available_unavailable_files_in_directory(input_directory_processing);
-
-                    Debug.WriteLine("ELEMENT 111");
-                    input_directory_status.available_files.ForEach(element =>
-                    {
-                        Debug.WriteLine("ELEMENT "+element);
-                        string file_name = Path.GetFileName(element);
-
-                        string input_directory_processing_filepath = input_directory_processing + @$"\{file_name}";
-
-                        if (queue.queue_path.Contains(input_directory_processing_filepath))
+                        Debug.WriteLine("ELEMENT 111");
+                        input_directory_status.available_files.ForEach(element =>
                         {
-                        } else {
-                            Debug.WriteLine("QUEUING FFMPEG "+input_directory_processing_filepath);
+                            Debug.WriteLine("ELEMENT "+element);
+                            string file_name = Path.GetFileName(element);
 
-                            queue.queue_path.Add(input_directory_processing_filepath);
+                            string input_directory_processing_filepath = input_directory_processing + @$"\{file_name}";
 
-                            Task.Run(async () => queue.queue_ffmpeg(element));
-                        }
-                    });
+                            if (queue.queue_path.Contains(input_directory_processing_filepath))
+                            {
+                            } else {
+                                Debug.WriteLine("QUEUING FFMPEG "+input_directory_processing_filepath);
+
+                                queue.queue_path.Add(input_directory_processing_filepath);
+
+                                Task.Run(async () => queue.queue_ffmpeg(element));
+                            }
+                        });
+                    }
                 }
             }
         }

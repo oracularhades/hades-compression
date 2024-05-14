@@ -127,9 +127,9 @@ namespace HadesCompression
         public class settings {
             public string input_directory { get; set; }
             public string output_directory { get; set; }
-            public int cpu_limit { get; set; } = 60;
-            public int memory_limit { get; set; } = 60;
-            public int thread_limit { get; set; } = 3;
+            public int cpu_limit { get; set; } = 50;
+            public int memory_limit { get; set; } = 50;
+            public int thread_limit { get; set; } = 1;
             public bool automatically_compress_videos { get; set; } = false;
             public bool encode_while_recording { get; set; }
             public bool encode_while_streaming { get; set; }

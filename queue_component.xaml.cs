@@ -6,9 +6,16 @@ using System.Runtime.CompilerServices;
 
 namespace HadesCompression
 {
-    public partial class QueueComponent : ContentView, INotifyPropertyChanged
+    public class QueueDataStruct : INotifyPropertyChanged
     {
-        private int _queue_count = 0;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private int _queue_count;
         public int queue_count
         {
             get => _queue_count;
@@ -22,7 +29,7 @@ namespace HadesCompression
             }
         }
 
-        private List<Objects.queue_item> _queue_bind = new List<Objects.queue_item>();
+        private List<Objects.queue_item> _queue_bind;
         public List<Objects.queue_item> queue_bind
         {
             get => _queue_bind;
@@ -35,16 +42,36 @@ namespace HadesCompression
                 }
             }
         }
+    }
+
+    public partial class QueueComponent : ContentView, INotifyPropertyChanged
+    {
+        private QueueDataStruct _queue_data = new QueueDataStruct{};
+        public QueueDataStruct queue_data
+        {
+            get => _queue_data;
+            set
+            {
+                if (!Object.Equals(_queue_data, _queue_data))
+                {
+                    _queue_data = value;
+                    OnPropertyChanged(nameof(_queue_data));
+                }
+            }
+        }
+
         private async void get_queue()
         {
             while (true)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(2500);
                 List<Objects.queue_item> queue_items = await queue.get();
 
-                if (!object.Equals(queue_bind, queue_items)) {
-                    queue_count = queue_items.Count;
-                    queue_bind = queue_items;
+                if (!object.Equals(queue_data.queue_bind, queue_items)) {
+                    QueueDataStruct queue_data_v = queue_data;
+                    queue_data_v.queue_count = queue_items.Count;
+                    queue_data_v.queue_bind = queue_items;
+                    queue_data = queue_data_v;
                 }
             }
         }

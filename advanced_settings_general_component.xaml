@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:custom_components="clr-namespace:HadesCompression"
              x:Class="HadesCompression.AdvancedSettingsGeneralComponent"
+             x:DataType="custom_components:AdvancedSettingsGeneralComponent"
              Shell.NavBarIsVisible="false">
              
     <ScrollView>

@@ -8,7 +8,7 @@
     <Frame CornerRadius="5" BorderColor="#454545" BackgroundColor="#454545" Padding="4">
         <VerticalStackLayout Spacing="8" Padding="4">
             <Label
-                Text="{Binding Version}"
+                Text="{Binding New_version}"
                 FontSize="18" />
 
             <HorizontalStackLayout Spacing="8">

@@ -72,7 +72,6 @@ public partial class UncompressedFilesToDelete : ContentView, INotifyPropertyCha
             bool answer = await parentPage.DisplayAlert("Delete orignal, uncompressed files?", $"Please make sure your output files (from Hades-compression/FFmpeg) are exactly as you expect them to be. Video processing is never perfect, there is a small chance there are FPS, audio, quality, etc issues\n\nFiles in {input_directory_processed} will be deleted", "Delete", "Cancel");
             if (answer == true)
             {
-
                 Files.delete_files_in_directory(input_directory_processed);
                 Show_uncompressed_files_to_delete_banner = false;
             }
@@ -116,7 +115,6 @@ public partial class UncompressedFilesToDelete : ContentView, INotifyPropertyCha
 	public UncompressedFilesToDelete()
 	{
 		InitializeComponent();
-		BindingContext = this;
 
         Task.Run(async () => {
             get_processed_size();

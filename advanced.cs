@@ -39,16 +39,14 @@ namespace HadesCompression
             Objects.advanced_settings existing = await get();
 
             if (object.Equals(existing, advanced_settings)) {
-                Debug.WriteLine("Advanced settings doesn't need updating because it's already the same.");
-                return;
+                throw new Exception("Advanced settings doesn't need updating because it's already the same.");
             }
 
             Regex regex = new Regex("[^A-Za-z0-9:.]");
             if (regex.IsMatch(advanced_settings.obs_address) != false)
             {
                 // OBS address contains illegal characters.
-                Debug.WriteLine("OBS address contains illegal characters.");
-                return;
+                throw new Exception("OBS address contains illegal characters.");
             }
 
             string output = JsonConvert.SerializeObject(advanced_settings);
